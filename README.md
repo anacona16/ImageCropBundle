@@ -1,7 +1,7 @@
 ImageCrop
 =========
 
-<img src="https://photos-3.dropbox.com/t/2/AACDHn2qvBfJed2s_tkSCSXe1lhxkG2i0zv1H1tCo1oYDQ/12/71119624/png/32x32/1/1443830400/0/2/Screenshot%202015-10-02%2017.34.43.png/CIjm9CEgASACIAMgBiAHKAEoBw/QDhoWgNmG-tjsZTa8nons1jB6fgJlpWj7k2aZhWq5hQ?size=1600x1200&size_mode=2" alt="ImageCrop" title="ImageCrop" align="right" />
+<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/master/Resources/doc/images/image_crop.png" alt="ImageCrop" title="ImageCrop" align="right" />
 
 ImageCrop lets you crop images in Symfony applications, this bundle add a new
 form field type.
@@ -137,4 +137,4 @@ That's all, now you can see a new button for crop the image.
 License
 -------
 
-This bundle is published under the [MIT License](LICENSE.md)
+This bundle is published under the [MIT License](LICENSE)
