@@ -2,7 +2,7 @@
 
 namespace Anacona16\Bundle\ImageCropBundle\Controller;
 
-use Anacona16\Bundle\ImageCropBundle\Form\ImageCropType;
+use Anacona16\Bundle\ImageCropBundle\Form\Type\ImageCropType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

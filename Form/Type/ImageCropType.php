@@ -1,6 +1,6 @@
 <?php
 
-namespace Anacona16\Bundle\ImageCropBundle\Form;
+namespace Anacona16\Bundle\ImageCropBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
