@@ -1,0 +1,9 @@
+services:
+    anacona16_image_crop.form.image_crop_field_type:
+        class: Anacona16\Bundle\ImageCropBundle\Form\Type\ImageCropFieldType
+        arguments: ["@service_container"]
+        tags:
+            - { name: form.type, alias: anacona16_image_crop }
+
+    anacona16_image_crop.util.class_util:
+        class: Anacona16\Bundle\ImageCropBundle\Util\ClassUtil

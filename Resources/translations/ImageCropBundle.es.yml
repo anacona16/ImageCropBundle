@@ -1,0 +1,6 @@
+image_crop: Cortar esta imagen
+message_crop: Redimensione la imagen de ser caso necesario. Pulse en 'Guardar la selección' para guardar los cambios.
+
+form.label.scaling: Escalar
+form.label.save: Guardar la selección
+form.submit.message: Guardado

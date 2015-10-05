@@ -1,0 +1,3 @@
+image_crop_crop_image:
+    path:     /{_locale}/crop_image/
+    defaults: { _controller: ImageCropBundle:Default:index }

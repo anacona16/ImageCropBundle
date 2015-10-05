@@ -1,0 +1,64 @@
+{% extends 'ImageCropBundle::layout.html.twig' %}
+
+{% block image_crop_content %}
+    <div class="col-lg-12">
+        <p>{{ 'message_crop'|trans({}, 'ImageCropBundle') }}</p>
+
+        {{ form(form) }}
+
+        <hr>
+
+        <img src="{{ image }}" id="jcrop_target">
+    </div>
+
+    {% spaceless %}
+        <script>
+            (function ($) {
+                $(function () {
+
+                    var $formScaling = $('#anacona16_image_crop_crop_type_scaling');
+                    var dimensions = $formScaling.find('option:selected').val().split('x');
+
+                    var jcrop_api = initJCrop(dimensions[0], dimensions[1]);
+
+                    $formScaling.on('change', function () {
+                        var dimensions = $(this).val().split('x');
+
+                        if (dimensions.length != 2) {
+                            return false;
+                        }
+
+                        jcrop_api.destroy();
+
+                        initJCrop(dimensions[0], dimensions[1]);
+                    });
+
+                    function initJCrop(width, height) {
+                        $('#jcrop_target').Jcrop({
+                            aspectRatio: 1,
+                            bgColor: 'none',
+                            trueSize: [width, height],
+                            boxWidth: width,
+                            boxHeight: height,
+                            setSelect: [0, 0, {{ width }}, {{ height }}],
+                            minSize: [{{ width }}, {{ height }}],
+                            maxSize: [{{ width }}, {{ height }}]
+                        }, function () {
+                            jcrop_api = this;
+                        });
+
+                        jcrop_api.container.on('cropmove', function (e, s, c) {
+                            $('#anacona16_image_crop_crop_type_cropx').val(c.x);
+                            $('#anacona16_image_crop_crop_type_cropy').val(c.y);
+                            $('#anacona16_image_crop_crop_type_cropw').val(c.w);
+                            $('#anacona16_image_crop_crop_type_croph').val(c.h);
+                        });
+
+                        return jcrop_api;
+                    }
+
+                });
+            })(jQuery);
+        </script>     
+    {% endspaceless %}
+{% endblock image_crop_content %}
