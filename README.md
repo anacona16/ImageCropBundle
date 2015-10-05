@@ -86,7 +86,7 @@ to your main application configuration file (usually `app/config/config.yml`):
 ```yaml
 # app/config/config.yml
 image_crop:
-    popup: bootstrap
+    popup: popup
     mappings:
         post_image:
             property: image # The property entity that have the image name
