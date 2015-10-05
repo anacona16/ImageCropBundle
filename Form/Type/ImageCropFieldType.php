@@ -12,7 +12,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class ImageCropFieldType extends AbstractType
 {
     /**
-     * @var $container ContainerInterface
+     * @var ContainerInterface
      */
     private $container;
 
@@ -36,9 +36,9 @@ class ImageCropFieldType extends AbstractType
     }
 
     /**
-     * @param FormView $view
+     * @param FormView      $view
      * @param FormInterface $form
-     * @param array $options
+     * @param array         $options
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
@@ -66,7 +66,6 @@ class ImageCropFieldType extends AbstractType
             $view->vars['image_name'] = $imageName;
         }
     }
-
 
     public function getParent()
     {

@@ -12,6 +12,7 @@ class ClassUtil
      * @param $originalImageHeight
      * @param $cropWidth
      * @param $cropHeight
+     *
      * @return array
      */
     public function getScaling($step, $originalImageWidth, $originalImageHeight, $cropWidth, $cropHeight)
@@ -25,12 +26,12 @@ class ClassUtil
         $options = array();
 
         if ($step > 0) {
-            $options[$image_width . 'x' . $image_height] = $image_width . ' x ' . $image_height . 'px (Original)';
+            $options[$image_width.'x'.$image_height] = $image_width.' x '.$image_height.'px (Original)';
             $scale_width -= $step;
 
             while ($scale_width > $crop_width && ($scale_width / $aspect) > $crop_height) {
                 $scaled_height = intval($scale_width / $aspect);
-                $options[$scale_width . 'x' . $scaled_height] = $scale_width . ' x ' . $scaled_height . 'px (' . round((($scale_width / $image_width) * 100), 2) . '%)';
+                $options[$scale_width.'x'.$scaled_height] = $scale_width.' x '.$scaled_height.'px ('.round((($scale_width / $image_width) * 100), 2).'%)';
                 $scale_width -= $step;
             }
         }
@@ -40,7 +41,7 @@ class ClassUtil
         $crop_width_with_border = $crop_width + 2;
 
         if ($crop_width != ($scale_width + $step) && $cropped_height >= $crop_height) {
-            $options[$crop_width_with_border . 'x' . $cropped_height] = $crop_width_with_border . ' x ' . $cropped_height . 'px (' . round((($scale_width / $image_width) * 100), 2) . '%)';
+            $options[$crop_width_with_border.'x'.$cropped_height] = $crop_width_with_border.' x '.$cropped_height.'px ('.round((($scale_width / $image_width) * 100), 2).'%)';
         }
 
         return $options;

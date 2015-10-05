@@ -10,8 +10,8 @@ class DefaultController extends Controller
 {
     public function indexAction(Request $request)
     {
-        $imageCropMapping   = $request->query->get('image_crop_mapping', null);
-        $imageName          = $request->query->get('image_name', null);
+        $imageCropMapping = $request->query->get('image_crop_mapping', null);
+        $imageName = $request->query->get('image_name', null);
 
         if (null === $imageCropMapping || null === $imageName) {
             throw new \InvalidArgumentException('Some required arguments are missing.');
@@ -23,7 +23,7 @@ class DefaultController extends Controller
         $imageCropMapping = $imageCropMappings[$imageCropMapping];
         $imageCropLiipImagineFilter = $imageCropMapping['liip_imagine_filter'];
 
-        $downloadUri = $imageCropMapping['uri_prefix'] . '/' . $imageName;
+        $downloadUri = $imageCropMapping['uri_prefix'].'/'.$imageName;
 
         $lippImagineFilterMananger = $this->container->get('liip_imagine.filter.manager');
         $liipImagineFilter = $lippImagineFilterMananger->getFilterConfiguration()->get($imageCropLiipImagineFilter);
@@ -54,7 +54,7 @@ class DefaultController extends Controller
                     ],
                     'crop' => [
                         'start' => [$form->get('cropx')->getData(), $form->get('cropy')->getData()],
-                        'size' => [$form->get('cropw')->getData(), $form->get('croph')->getData()]
+                        'size' => [$form->get('cropw')->getData(), $form->get('croph')->getData()],
                     ],
                 ],
             ]);

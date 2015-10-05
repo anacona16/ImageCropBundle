@@ -8,32 +8,32 @@ use Symfony\Component\Form\FormBuilderInterface;
 class ImageCropType extends AbstractType
 {
     /**
-     * @var $scaling array
+     * @var array
      */
     private $scaling;
 
     /**
-     * @var $downloadUri string
+     * @var string
      */
     private $downloadUri;
 
     /**
-     * @var $originalWidth int
+     * @var int
      */
     private $originalWidth;
 
     /**
-     * @var $originalHeight int
+     * @var int
      */
     private $originalHeight;
 
     /**
      * CropType constructor.
      *
-     * @param array $scaling
+     * @param array  $scaling
      * @param string $downloadUri
-     * @param int $originalWidth
-     * @param int $originalHeight
+     * @param int    $originalWidth
+     * @param int    $originalHeight
      */
     public function __construct(array $scaling, $downloadUri, $originalWidth, $originalHeight)
     {
@@ -45,7 +45,7 @@ class ImageCropType extends AbstractType
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
