@@ -3,6 +3,7 @@ message_crop: Redimensione la imagen de ser caso necesario. Pulse en 'Guardar la
 
 form.label.scaling: Escalar
 form.label.mapping: Recortes
+form.label.submit_mapping: Usar recorte
 form.label.save: Guardar la selección
 form.submit.message: Guardado
 form.submit.error: Error
