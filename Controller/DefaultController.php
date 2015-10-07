@@ -58,7 +58,10 @@ class DefaultController extends Controller
                 'label' => 'form.label.mapping',
                 'translation_domain' => 'ImageCropBundle',
             ))
-            ->add('submit', 'submit')
+            ->add('submit', 'submit', array(
+                'label' => 'form.label.submit_mapping',
+                'translation_domain' => 'ImageCropBundle',
+            ))
             ->getForm();
 
         $form->handleRequest($request);
@@ -82,7 +85,7 @@ class DefaultController extends Controller
 
     /**
      * Render de form with crop enable.
-     * 
+     *
      * @param Request $request
      * @param $useImageCropMapping
      * @param $imageName
