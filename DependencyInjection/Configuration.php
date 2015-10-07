@@ -51,7 +51,6 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->children()
                             ->scalarNode('uri_prefix')->cannotBeEmpty()->end()
-                            ->scalarNode('property')->cannotBeEmpty()->end()
                             ->scalarNode('liip_imagine_filter')->cannotBeEmpty()->end()
                         ->end()
                     ->end()

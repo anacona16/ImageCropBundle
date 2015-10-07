@@ -2,5 +2,7 @@ image_crop: Crop this image
 message_crop: Resize image if needed, then select a crop area. Click 'Save selection' to save the changes.
 
 form.label.scaling: Scaling
+form.label.mapping: Crops
 form.label.save: Save selection
 form.submit.message: Saved
+form.submit.error: Error

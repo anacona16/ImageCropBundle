@@ -1,10 +1,18 @@
 ImageCrop
 =========
 
-<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/master/Resources/doc/images/image_crop.png" alt="ImageCrop" title="ImageCrop" align="right" />
+<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/master/Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" align="right" />
 
 ImageCrop lets you crop images in Symfony applications, this bundle add a new
-form field type.
+form file field extension.
+
+**This bundle don't have an upload utility.**
+
+**Features**
+
+  * Easy use, just add a new parameter to your form class.
+  * Integration with standard form file type.
+  * Integration with well known uploader bundles.
 
 **Requirements**
 
@@ -89,7 +97,6 @@ image_crop:
     popup: popup
     mappings:
         post_image:
-            property: image # The property entity that have the image name
             uri_prefix: /uploads/images/post # Relative to web directory
             liip_imagine_filter: post_image
 ```
@@ -117,15 +124,25 @@ twig:
         - "ImageCropBundle:Form:fields.html.twig"
 ```
 
+### Using standard file type
+
 In your form type class you must add a new field:
 
 ```php
 $builder
-    ->add('title', null, array('label' => 'label.title'))
-    ->add('image_crop', 'anacona16_image_crop', array(
-        'image_crop_mapping' => 'post_image',
-        'required' => false,
-        'mapped' => false,
+    ->add('title')
+    ->add('imageFile', 'file', array(
+        'crop_property' => 'image',
+    ))
+;
+```
+### Using VichUploaderBundle
+
+```php
+$builder
+    ->add('title')
+    ->add('imageFile', 'vich_image', array(
+        'crop_property' => 'image',
     ))
 ;
 ```

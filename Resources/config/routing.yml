@@ -1,3 +1,11 @@
+image_crop_buttom_crop:
+    path:     /{_locale}/buttom_crop/
+    defaults: { _controller: ImageCropBundle:Default:buttonCrop }
+
+image_crop_select_mapping:
+    path:     /{_locale}/select_mapping/
+    defaults: { _controller: ImageCropBundle:Default:cropMappingSelect }
+
 image_crop_crop_image:
-    path:     /{_locale}/crop_image/
-    defaults: { _controller: ImageCropBundle:Default:index }
+    path:     /{_locale}/crop_image/{useImageCropMapping}/{imageName}/
+    defaults: { _controller: ImageCropBundle:Default:crop }

@@ -1,9 +1,13 @@
 services:
-    anacona16_image_crop.form.image_crop_field_type:
-        class: Anacona16\Bundle\ImageCropBundle\Form\Type\ImageCropFieldType
-        arguments: ["@service_container"]
+    anacona16_image_crop.form.image_crop_field_type_extension:
+        class: Anacona16\Bundle\ImageCropBundle\Form\Extension\ImageCropTypeExtension
         tags:
-            - { name: form.type, alias: anacona16_image_crop }
+            - { name: form.type_extension, alias: file }
+
+    anacona16_image_crop.form.image_crop_field_vich_image_type_extension:
+        class: Anacona16\Bundle\ImageCropBundle\Form\Extension\ImageCropVichImageTypeExtension
+        tags:
+            - { name: form.type_extension, alias: vich_image }
 
     anacona16_image_crop.util.class_util:
         class: Anacona16\Bundle\ImageCropBundle\Util\ClassUtil
