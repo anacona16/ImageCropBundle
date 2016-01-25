@@ -3,7 +3,10 @@
 namespace Anacona16\Bundle\ImageCropBundle\Controller;
 
 use Anacona16\Bundle\ImageCropBundle\Form\Type\ImageCropType;
+use Liip\ImagineBundle\Binary\BinaryInterface;
+use Liip\ImagineBundle\Imagine\Filter\FilterManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -122,6 +125,29 @@ class DefaultController extends Controller
             )),
         ));
 
+        return $this->processSubmittedForm($request, $form, $lippImagineFilterManager, $binary, $imageCropLiipImagineFilter, $downloadUri);
+
+        return $this->render('ImageCropBundle:Default:index.html.twig', [
+            'form' => $form->createView(),
+            'image' => $downloadUri,
+            'height' => $cropHeight,
+            'width' => $cropWidth,
+        ]);
+    }
+
+    /**
+     * Process submitted form.
+     *
+     * @param Request $request
+     * @param Form $form
+     * @param FilterManager $lippImagineFilterManager
+     * @param BinaryInterface $binary
+     * @param $imageCropLiipImagineFilter
+     * @param $downloadUri
+     * @return JsonResponse
+     */
+    private function processSubmittedForm(Request $request, Form $form, FilterManager $lippImagineFilterManager, BinaryInterface $binary, $imageCropLiipImagineFilter, $downloadUri)
+    {
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -149,13 +175,6 @@ class DefaultController extends Controller
 
             return new JsonResponse(array('message' => $this->container->get('translator')->trans($message, array(), 'ImageCropBundle')));
         }
-
-        return $this->render('ImageCropBundle:Default:index.html.twig', [
-            'form' => $form->createView(),
-            'image' => $downloadUri,
-            'height' => $cropHeight,
-            'width' => $cropWidth,
-        ]);
     }
 
     /**
