@@ -6,6 +6,8 @@ ImageCrop
 ImageCrop lets you crop images in Symfony applications, this bundle add a new
 form file field extension.
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/ac8e3237-f910-46b5-9fcc-3afe329496eb/mini.png)](https://insight.sensiolabs.com/projects/ac8e3237-f910-46b5-9fcc-3afe329496eb)
+
 **This bundle don't have an upload utility.**
 
 **Features**
