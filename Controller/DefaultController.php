@@ -125,7 +125,11 @@ class DefaultController extends Controller
             )),
         ));
 
-        return $this->processSubmittedForm($request, $form, $lippImagineFilterManager, $binary, $imageCropLiipImagineFilter, $downloadUri);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            return $this->processSubmittedForm($form, $lippImagineFilterManager, $binary, $imageCropLiipImagineFilter, $downloadUri);
+        }
 
         return $this->render('ImageCropBundle:Default:index.html.twig', [
             'form' => $form->createView(),
@@ -138,7 +142,6 @@ class DefaultController extends Controller
     /**
      * Process submitted form.
      *
-     * @param Request $request
      * @param Form $form
      * @param FilterManager $lippImagineFilterManager
      * @param BinaryInterface $binary
@@ -146,35 +149,31 @@ class DefaultController extends Controller
      * @param $downloadUri
      * @return JsonResponse
      */
-    private function processSubmittedForm(Request $request, Form $form, FilterManager $lippImagineFilterManager, BinaryInterface $binary, $imageCropLiipImagineFilter, $downloadUri)
+    private function processSubmittedForm(Form $form, FilterManager $lippImagineFilterManager, BinaryInterface $binary, $imageCropLiipImagineFilter, $downloadUri)
     {
-        $form->handleRequest($request);
+        try {
+            list($scalingWidth, $scalingHeight) = explode('x', $form->get('scaling')->getData());
 
-        if ($form->isValid()) {
-            try {
-                list($scalingWidth, $scalingHeight) = explode('x', $form->get('scaling')->getData());
-
-                $filteredBinary = $lippImagineFilterManager->applyFilter($binary, $imageCropLiipImagineFilter, [
-                    'filters' => [
-                        'thumbnail' => [
-                            'size' => [$scalingWidth, $scalingHeight],
-                        ],
-                        'crop' => [
-                            'start' => [$form->get('cropx')->getData(), $form->get('cropy')->getData()],
-                            'size' => [$form->get('cropw')->getData(), $form->get('croph')->getData()],
-                        ],
+            $filteredBinary = $lippImagineFilterManager->applyFilter($binary, $imageCropLiipImagineFilter, [
+                'filters' => [
+                    'thumbnail' => [
+                        'size' => [$scalingWidth, $scalingHeight],
                     ],
-                ]);
+                    'crop' => [
+                        'start' => [$form->get('cropx')->getData(), $form->get('cropy')->getData()],
+                        'size' => [$form->get('cropw')->getData(), $form->get('croph')->getData()],
+                    ],
+                ],
+            ]);
 
-                $this->container->get('liip_imagine.cache.manager')->store($filteredBinary, $downloadUri, $imageCropLiipImagineFilter);
+            $this->container->get('liip_imagine.cache.manager')->store($filteredBinary, $downloadUri, $imageCropLiipImagineFilter);
 
-                $message = 'form.submit.message';
-            } catch (\Exception $e) {
-                $message = 'form.submit.error';
-            }
-
-            return new JsonResponse(array('message' => $this->container->get('translator')->trans($message, array(), 'ImageCropBundle')));
+            $message = 'form.submit.message';
+        } catch (\Exception $e) {
+            $message = 'form.submit.error';
         }
+
+        return new JsonResponse(array('message' => $this->container->get('translator')->trans($message, array(), 'ImageCropBundle')));
     }
 
     /**
