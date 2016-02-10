@@ -1,4 +1,4 @@
-{% set image_crop_url = path('image_crop_select_mapping', {image_name: image_name}) %}
+{% set image_crop_url = path('image_crop_select_mapping', {image_name: image_name, entity_name: entity_name}) %}
 
 {% if image_crop_popup == 'popup' %}
     <a href="#" onclick="window.open('{{ image_crop_url }}', 'ImageCropBundle', 'width={{ image_crop_popup_width }}, height={{ image_crop_popup_height }}, scrollbars=1'); return false;">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>

@@ -32,6 +32,13 @@ class ImageCropTypeExtension extends AbstractTypeExtension
         if (array_key_exists('crop_property', $options)) {
             $parentData = $form->getParent()->getData();
 
+            $entity = get_class($parentData);
+
+            $dataClass = array(
+                'namespace' => array_slice(explode('\\', $entity), 0, -1),
+                'classname' => join('', array_slice(explode('\\', $entity), -1)),
+            );
+
             if (null !== $parentData) {
                 $accessor = PropertyAccess::createPropertyAccessor();
                 $imageName = $accessor->getValue($parentData, $options['crop_property']);
@@ -40,7 +47,9 @@ class ImageCropTypeExtension extends AbstractTypeExtension
             }
 
             // set an "image_url" variable that will be available when rendering this field
+            // set an "entity_name" variable that will be available when rendering this field
             $view->vars['image_crop_name'] = $imageName;
+            $view->vars['entity_name'] = $dataClass['classname'];
         }
     }
 

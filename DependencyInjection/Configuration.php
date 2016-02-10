@@ -50,7 +50,7 @@ class Configuration implements ConfigurationInterface
                     ->useAttributeAsKey('name')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('uri_prefix')->cannotBeEmpty()->end()
+                            ->variableNode('uri_prefix')->cannotBeEmpty()->end()
                             ->scalarNode('liip_imagine_filter')->cannotBeEmpty()->end()
                         ->end()
                     ->end()

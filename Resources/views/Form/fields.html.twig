@@ -4,7 +4,7 @@
         {{ block('form_widget') }}
 
         {% if image_crop_name is defined and image_crop_name is not null %}
-            {{ render(controller('ImageCropBundle:Default:buttonCrop', {imageName: image_crop_name})) }}
+            {{ render(controller('ImageCropBundle:Default:buttonCrop', {imageName: image_crop_name, entityName: entity_name})) }}
         {% endif %}
 
     {% endspaceless %}
@@ -30,7 +30,7 @@
 	    </div>
 
         {% if image_crop_name is defined and image_crop_name is not null %}
-            {{ render(controller('ImageCropBundle:Default:buttonCrop', {imageName: image_crop_name})) }}
+            {{ render(controller('ImageCropBundle:Default:buttonCrop', {imageName: image_crop_name, entityName: entity_name})) }}
         {% endif %}
 
     {% endspaceless %}

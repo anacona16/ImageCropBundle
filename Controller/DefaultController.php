@@ -17,10 +17,11 @@ class DefaultController extends Controller
      *
      * @param Request $request
      * @param $imageName
+     * @param $entityName
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function buttonCropAction(Request $request, $imageName)
+    public function buttonCropAction(Request $request, $imageName, $entityName)
     {
         $imageCropMappings = $this->getImageCropMappings();
 
@@ -35,6 +36,7 @@ class DefaultController extends Controller
             'image_crop_popup_width' => $imageCropPopupWidth,
             'image_crop_popup_height' => $imageCropPopupHeight,
             'image_name' => $imageName,
+            'entity_name' => $entityName,
         ]);
     }
 
@@ -48,6 +50,7 @@ class DefaultController extends Controller
     public function cropMappingSelectAction(Request $request)
     {
         $imageName = $request->query->get('image_name', null);
+        $entityName = $request->query->get('entity_name', null);
 
         if (null === $imageName) {
             throw new \InvalidArgumentException('Some required arguments are missing.');
@@ -83,6 +86,7 @@ class DefaultController extends Controller
             'renderCrop' => $renderCrop,
             'mapping' => $mapping,
             'imageName' => $imageName,
+            'entityName' => $entityName,
         ]);
     }
 
@@ -92,16 +96,22 @@ class DefaultController extends Controller
      * @param Request $request
      * @param $useImageCropMapping
      * @param $imageName
+     * @param $entityName
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function cropAction(Request $request, $useImageCropMapping, $imageName)
+    public function cropAction(Request $request, $useImageCropMapping, $imageName, $entityName)
     {
         $imageCropMappings = $this->getImageCropMappings();
         $imageCropMapping = $imageCropMappings[$useImageCropMapping];
         $imageCropLiipImagineFilter = $imageCropMapping['liip_imagine_filter'];
+        $mappingUriPrefix = $imageCropMapping['uri_prefix'];
 
-        $downloadUri = $imageCropMapping['uri_prefix'].'/'.$imageName;
+        if (is_array($mappingUriPrefix)) {
+            $downloadUri = $mappingUriPrefix[$entityName].'/'.$imageName;
+        } else {
+            $downloadUri = $mappingUriPrefix.'/'.$imageName;
+        }
 
         $lippImagineFilterManager = $this->container->get('liip_imagine.filter.manager');
         $liipImagineFilter = $lippImagineFilterManager->getFilterConfiguration()->get($imageCropLiipImagineFilter);
