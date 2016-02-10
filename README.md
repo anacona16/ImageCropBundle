@@ -103,6 +103,22 @@ image_crop:
             liip_imagine_filter: post_image
 ```
 
+If you want use a mapping with more than one **uri_prefix**, you can pass an array, like this:
+
+```yaml
+# app/config/config.yml
+image_crop:
+    popup: popup
+    mappings:
+        post_image:
+            uri_prefix:
+                Post: /uploads/images/post # Relative to web directory
+                User: /uploads/images/user # Relative to web directory
+            liip_imagine_filter: post_image
+```
+
+Where **Post** and **User** correspond to the Entity name.
+
 This bundle require that you have a liip imagine filter, this filter must have
 a thumbnail filter with width and height attributes:
 
