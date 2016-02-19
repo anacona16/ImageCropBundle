@@ -107,11 +107,7 @@ class DefaultController extends Controller
         $imageCropLiipImagineFilter = $imageCropMapping['liip_imagine_filter'];
         $mappingUriPrefix = $imageCropMapping['uri_prefix'];
 
-        if (is_array($mappingUriPrefix)) {
-            $downloadUri = $mappingUriPrefix[$entityName].'/'.$imageName;
-        } else {
-            $downloadUri = $mappingUriPrefix.'/'.$imageName;
-        }
+        $downloadUri = is_array($mappingUriPrefix) ? $mappingUriPrefix[$entityName].'/'.$imageName : $mappingUriPrefix.'/'.$imageName;
 
         $lippImagineFilterManager = $this->container->get('liip_imagine.filter.manager');
         $liipImagineFilter = $lippImagineFilterManager->getFilterConfiguration()->get($imageCropLiipImagineFilter);
