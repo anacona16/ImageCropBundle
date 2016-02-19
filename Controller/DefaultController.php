@@ -30,14 +30,14 @@ class DefaultController extends Controller
         $imageCropPopupWidth = $imageCropConfig['popup_width'];
         $imageCropPopupHeight = $imageCropConfig['popup_height'];
 
-        return $this->render('ImageCropBundle:Default:button.html.twig', [
+        return $this->render('ImageCropBundle:Default:button.html.twig', array(
             'image_crop_mapping' => key($imageCropMappings),
             'image_crop_popup' => $imageCropPopup,
             'image_crop_popup_width' => $imageCropPopupWidth,
             'image_crop_popup_height' => $imageCropPopupHeight,
             'image_name' => $imageName,
             'entity_name' => $entityName,
-        ]);
+        ));
     }
 
     /**
@@ -81,13 +81,13 @@ class DefaultController extends Controller
             $renderCrop = true;
         }
 
-        return $this->render('ImageCropBundle:Default:form_mapping.html.twig', [
+        return $this->render('ImageCropBundle:Default:form_mapping.html.twig', array(
             'form' => $form->createView(),
             'renderCrop' => $renderCrop,
             'mapping' => $mapping,
             'imageName' => $imageName,
             'entityName' => $entityName,
-        ]);
+        ));
     }
 
     /**
@@ -129,10 +129,7 @@ class DefaultController extends Controller
         $scaling = $this->container->get('anacona16_image_crop.util.class_util')->getScaling(50, $originalWidth, $originalHeight, $cropWidth, $cropHeight);
 
         $form = $this->createForm(new ImageCropType($scaling, $downloadUri, $originalWidth, $originalHeight), null, array(
-            'action' => $this->generateUrl('image_crop_crop_image', array(
-                'useImageCropMapping' => $useImageCropMapping,
-                'imageName' => $imageName,
-            )),
+            'action' => $this->generateUrl('image_crop_crop_image', array('useImageCropMapping' => $useImageCropMapping, 'imageName' => $imageName)),
         ));
 
         $form->handleRequest($request);
@@ -141,12 +138,12 @@ class DefaultController extends Controller
             return $this->processSubmittedForm($form, $lippImagineFilterManager, $binary, $imageCropLiipImagineFilter, $downloadUri);
         }
 
-        return $this->render('ImageCropBundle:Default:index.html.twig', [
+        return $this->render('ImageCropBundle:Default:index.html.twig', array(
             'form' => $form->createView(),
             'image' => $downloadUri,
             'height' => $cropHeight,
             'width' => $cropWidth,
-        ]);
+        ));
     }
 
     /**
@@ -164,17 +161,17 @@ class DefaultController extends Controller
         try {
             list($scalingWidth, $scalingHeight) = explode('x', $form->get('scaling')->getData());
 
-            $filteredBinary = $lippImagineFilterManager->applyFilter($binary, $imageCropLiipImagineFilter, [
-                'filters' => [
-                    'thumbnail' => [
-                        'size' => [$scalingWidth, $scalingHeight],
-                    ],
-                    'crop' => [
-                        'start' => [$form->get('cropx')->getData(), $form->get('cropy')->getData()],
-                        'size' => [$form->get('cropw')->getData(), $form->get('croph')->getData()],
-                    ],
-                ],
-            ]);
+            $filteredBinary = $lippImagineFilterManager->applyFilter($binary, $imageCropLiipImagineFilter, array(
+                'filters' => array(
+                    'thumbnail' => array(
+                        'size' => array($scalingWidth, $scalingHeight),
+                    ),
+                    'crop' => array(
+                        'start' => array($form->get('cropx')->getData(), $form->get('cropy')->getData()),
+                        'size' => array($form->get('cropw')->getData(), $form->get('croph')->getData()),
+                    ),
+                ),
+            ));
 
             $this->container->get('liip_imagine.cache.manager')->store($filteredBinary, $downloadUri, $imageCropLiipImagineFilter);
 
