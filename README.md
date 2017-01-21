@@ -95,6 +95,10 @@ to your main application configuration file (usually `app/config/config.yml`):
 
 ```yaml
 # app/config/config.yml
+twig:
+    form_themes:
+        - "ImageCropBundle:Form:fields.html.twig"
+
 image_crop:
     popup: popup
     mappings:
@@ -103,7 +107,7 @@ image_crop:
             liip_imagine_filter: post_image
 ```
 
-If you want use a mapping with more than one **uri_prefix**, you can pass an array, like this:
+If you want to use a mapping with more than one **uri_prefix**, you can pass an array, like this:
 
 ```yaml
 # app/config/config.yml
