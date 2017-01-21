@@ -125,7 +125,7 @@ class DefaultController extends Controller
         $scaling = $this->container->get('anacona16_image_crop.util.class_util')->getScaling(50, $originalWidth, $originalHeight, $cropWidth, $cropHeight);
 
         $form = $this->createForm(new ImageCropType($scaling, $downloadUri, $originalWidth, $originalHeight), null, array(
-            'action' => $this->generateUrl('image_crop_crop_image', array('useImageCropMapping' => $useImageCropMapping, 'imageName' => $imageName)),
+            'action' => $this->generateUrl('image_crop_crop_image', array('useImageCropMapping' => $useImageCropMapping, 'imageName' => $imageName, 'entityName' => $entityName)),
         ));
 
         $form->handleRequest($request);

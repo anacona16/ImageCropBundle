@@ -7,5 +7,5 @@ image_crop_select_mapping:
     defaults: { _controller: ImageCropBundle:Default:cropMappingSelect }
 
 image_crop_crop_image:
-    path:     /{_locale}/crop_image/{useImageCropMapping}/{imageName}/
+    path:     /{_locale}/crop_image/{useImageCropMapping}/{imageName}/{entityName}/
     defaults: { _controller: ImageCropBundle:Default:crop }
