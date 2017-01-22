@@ -95,10 +95,6 @@ to your main application configuration file (usually `app/config/config.yml`):
 
 ```yaml
 # app/config/config.yml
-twig:
-    form_themes:
-        - "ImageCropBundle:Form:fields.html.twig"
-
 image_crop:
     popup: popup
     mappings:
