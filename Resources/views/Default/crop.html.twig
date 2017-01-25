@@ -1,0 +1,46 @@
+{% extends 'ImageCropBundle::layout.html.twig' %}
+
+{% block image_crop_content %}
+    <div class="imagecrop-ui">
+        <a title="Cancelar el recorte" href="{{ url_overview }}">{{ 'label.cancel_crop'|trans({}, 'ImageCropBundle') }}</a>
+
+        <div id="imagecrop-selection" class="clearfix">
+            {{ form_start(form_style_selection, {'attr': {'id': 'imagecrop-style-selection-form'}}) }}
+                {{ form_row(form_style_selection.styles, {'id': 'edit-styles'}) }}
+                {{ form_row(form_style_selection.imageCropUrl, {'id': 'imagecrop-url'}) }}
+                {{ form_rest(form_style_selection) }}
+            {{ form_end(form_style_selection) }}
+        </div>
+
+        <div id="imagecrop-help">
+            {{ 'message_crop'|trans({}, 'ImageCropBundle') }}
+        </div>
+
+        <div id="imagecrop-forms">
+            {{ form_start(form_crop_setting, {'attr': {'id': 'imagecrop-crop-settings-form'}}) }}
+            {{ form_end(form_crop_setting) }}
+
+            <div class="clearfix"></div>
+
+            {{ form_start(form_scaling_setting, {'attr': {'id': 'imagecrop-scale-settings-form'}}) }}
+                {{ form_row(form_scaling_setting.scaling, {'id': 'edit-scaling'}) }}
+                {{ form_rest(form_scaling_setting) }}
+            {{ form_end(form_scaling_setting) }}
+        </div>
+
+        <div id="imagecrop-crop-wrapper" style="width: {{ imageCrop.imageWidth }}px; height: {{ imageCrop.imageHeight }}px;">
+            <div id="image-crop-container" style="background-image: url('{{ imageCrop.styleDestination }} '); width: {{ imageCrop.imageWidth }}px; height: {{ imageCrop.imageHeight }}px;"></div>
+            <div id="resizeMe" style="background-image: url('{{ imageCrop.styleDestination }}'); width: {{ imageCrop.width }}px; height: {{ imageCrop.height }}px; top: 20px;"></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block assets_footer %}
+    {{ parent() }}
+
+    <script>
+        {% for key,setting in settings %}
+            ImageCrop.settings.{{ key }} = "{{ setting }}";
+        {% endfor %}
+    </script>
+{% endblock assets_footer %}

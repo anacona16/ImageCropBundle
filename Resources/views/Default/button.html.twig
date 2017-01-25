@@ -1,27 +1,28 @@
-{% set image_crop_url = path('image_crop_select_mapping', {image_name: image_name, entity_name: entity_name}) %}
+{% set image_crop_url = path('imagecrop_overview', {style: style_name, id: entity_id, fqcn: entity_fqcn}) %}
 
-{% if image_crop_popup == 'popup' %}
-    <a href="#" onclick="window.open('{{ image_crop_url }}', 'ImageCropBundle', 'width={{ image_crop_popup_width }}, height={{ image_crop_popup_height }}, scrollbars=1'); return false;">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
-{% elseif image_crop_popup == 'colorbox' %}
-    <a href="{{ image_crop_url }}&width={{ image_crop_popup_width }}px&height={{ image_crop_popup_width }}px" id="linkColorboxImageCrop">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
-{% elseif image_crop_popup == 'bootstrap' %}
-    <button type="button" class="btn" data-toggle="modal" data-target="#modalImageCropBundle">
+{% if image_crop_window == 'popup' %}
+    <a onclick="ImageCrop.openPopup(this, {{ image_crop_window_width }}, {{ image_crop_window_height }}); return false;" href="{{ image_crop_url }}">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
+{% elseif image_crop_window == 'colorbox' %}
+    <a class="colorbox-load" href="{{ image_crop_url }}?iframe=true&width={{ image_crop_window_width }}px&height={{ image_crop_window_height }}px" id="linkColorboxImageCrop">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
+{% elseif image_crop_window == 'bootstrap' %}
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImageCropBundle">
         {{ 'image_crop'|trans({}, 'ImageCropBundle') }}
-      </button>
+    </button>
 
-    <div class="modal fade" id="modalImageCropBundle" tabindex="-1" role="dialog" aria-labelledby="ImageCropBundle">
+    <!-- Modal -->
+    <div class="modal fade" id="modalImageCropBundle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="ImageCropBundle">&nbsp;</h4>
                 </div>
                 <div class="modal-body">
-                    <iframe src="{{ image_crop_url }}" frameborder="0" width="100%" height="{{ image_crop_popup_height }}"></iframe>
+                    <iframe src="{{ image_crop_url }}" frameborder="0" width="100%" height="{{ image_crop_window_height }}"></iframe>
                 </div>
             </div>
         </div>
     </div>
 {% else %}
-    <iframe src="{{ image_crop_url }}" frameborder="0" width="{{ image_crop_popup_width }}" height="{{ image_crop_popup_height }}"></iframe>
+    <iframe src="{{ image_crop_url }}" frameborder="0" width="{{ image_crop_window_width }}" height="{{ image_crop_window_height }}"></iframe>
 {% endif %}

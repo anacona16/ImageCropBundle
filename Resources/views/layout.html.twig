@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>ImageCropBundle</title>
-    <link rel="stylesheet" href="{{ asset('bundles/imagecrop/css/Jcrop.min.css') }}">
 
-    <script src="{{ asset('bundles/imagecrop/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('bundles/imagecrop/js/Jcrop.min.js') }}"></script>
+    {% block assets_header %}
+        <link rel="stylesheet" href="{{ asset('bundles/imagecrop/css/imagecrop.css') }}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {% endblock assets_header %}
 </head>
-<body>
+    <body class="page-imagecrop">
+        {% block image_crop_content %}
+        {% endblock image_crop_content %}
 
-<div>
-    {% block image_crop_content %}
-    {% endblock image_crop_content %}
-</div>
-</body>
+        {% block assets_footer %}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+            <script src="{{ asset('bundles/imagecrop/js/headers.js') }}"></script>
+            <script src="{{ asset('bundles/imagecrop/js/imagecrop.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/imagecrop/js/imagecrop.ui.crop.js') }}"></script>
+        {% endblock assets_footer %}
+    </body>
 </html>

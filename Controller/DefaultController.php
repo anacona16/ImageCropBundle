@@ -2,13 +2,15 @@
 
 namespace Anacona16\Bundle\ImageCropBundle\Controller;
 
-use Anacona16\Bundle\ImageCropBundle\Form\Type\ImageCropType;
-use Liip\ImagineBundle\Binary\BinaryInterface;
-use Liip\ImagineBundle\Imagine\Filter\FilterManager;
+use Anacona16\Bundle\ImageCropBundle\Form\Type\CropSettingFormType;
+use Anacona16\Bundle\ImageCropBundle\Form\Type\ScalingSettingFormType;
+use Anacona16\Bundle\ImageCropBundle\Form\Type\StyleSelectionFormType;
+use Anacona16\Bundle\ImageCropBundle\Util\ImageCrop;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class DefaultController extends Controller
 {
@@ -16,210 +18,226 @@ class DefaultController extends Controller
      * This action show the button crop.
      *
      * @param Request $request
-     * @param $imageName
-     * @param $entityName
+     * @param $id
+     * @param $fqcn
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function buttonCropAction(Request $request, $imageName, $entityName)
+    public function buttonCropAction(Request $request, $id, $fqcn)
     {
-        $imageCropMappings = $this->getImageCropMappings();
+        $imageCropConfig = $this->getParameter('image_crop');
 
-        $imageCropConfig = $this->getImageCropConfig();
-        $imageCropPopup = $imageCropConfig['popup'];
-        $imageCropPopupWidth = $imageCropConfig['popup_width'];
-        $imageCropPopupHeight = $imageCropConfig['popup_height'];
+        $imageCropWindow = $imageCropConfig['window'];
+        $imageCropWindowWidth = $imageCropConfig['window_width'];
+        $imageCropWindowHeight = $imageCropConfig['window_height'];
 
-        return $this->render('ImageCropBundle:Default:button.html.twig', array(
-            'image_crop_mapping' => key($imageCropMappings),
-            'image_crop_popup' => $imageCropPopup,
-            'image_crop_popup_width' => $imageCropPopupWidth,
-            'image_crop_popup_height' => $imageCropPopupHeight,
-            'image_name' => $imageName,
-            'entity_name' => $entityName,
+        return $this->render('ImageCropBundle:Default:button.html.twig', [
+            'image_crop_window' => $imageCropWindow,
+            'image_crop_window_width' => $imageCropWindowWidth,
+            'image_crop_window_height' => $imageCropWindowHeight,
+            'style_name' => 'post_image_crop',
+            'entity_id' => $id,
+            'entity_fqcn' => $fqcn,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param $style
+     * @param $id
+     * @param $fqcn
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function overviewAction(Request $request, $style, $id, $fqcn)
+    {
+        $entityFQCN = urldecode($fqcn);
+        $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
+
+        $mappingFactory = $this->get('vich_uploader.property_mapping_factory');
+        $mapping = $mappingFactory->fromObject($object, $entityFQCN);
+
+        $classUtil = $this->get('anacona16_image_crop.util.class_util');
+        $styles = $classUtil->getStyles($entityFQCN);
+
+        $urlAction = $this->generateUrl('imagecrop_overview', array(
+            'style' => 'style_name',
+            'id' => $id,
+            'fqcn' => $fqcn
+        ), UrlGenerator::ABSOLUTE_URL);
+
+        $urlCrop = str_replace(array('overview', 'style_name'), array('crop', $style), $urlAction);
+
+        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
+            'defaultStyle' => $style,
+            'styles' => $styles,
+            'imageCropUrl' => $urlAction,
+            'action' => 'overview',
+        ));
+
+        return $this->render('ImageCropBundle:Default:overview.html.twig', array(
+            'form_style_selection' => $formStyleSelection->createView(),
+            'object' => $object,
+            'file_property_name' => $mapping[0]->getFilePropertyName(),
+            'style_name' => $style,
+            'url_crop' => $urlCrop,
         ));
     }
 
     /**
-     * Show the form for select a mapping.
+     * @param Request $request
+     * @param $style
+     * @param $id
+     * @param $fqcn
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function cropAction(Request $request, $style, $id, $fqcn)
+    {
+        $entityFQCN = urldecode($fqcn);
+        $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
+
+        $mappingFactory = $this->get('vich_uploader.property_mapping_factory');
+        $mapping = $mappingFactory->fromObject($object, $entityFQCN);
+
+        $classUtil = $this->get('anacona16_image_crop.util.class_util');
+        $styles = $classUtil->getStyles($entityFQCN);
+
+        $imageCrop = $this->get('anacona16_image_crop.util.imagecrop');
+
+        $imageCrop->setEntity($object);
+
+        $imageCrop->loadFile($object, $mapping[0]->getFilePropertyName());
+        $imageCrop->setImageStyle($style);
+        $imageCrop->setPropertyName($mapping[0]->getFilePropertyName());
+        $imageCrop->setInCroppingMode(true);
+        $imageCrop->setCropDestinations();
+
+        $imageCrop->loadCropSettings();
+        $imageCrop->writeCropreadyImage();
+        $settings = $imageCrop->addImagecropUi(true);
+
+        $settings += array(
+            'manipulationUrl' => $this->get('router')->generate('imagecrop_generate_image'),
+            'cropped' => $request->get('cropping', false),
+            'resizable' => $imageCrop->isResizable(),
+        );
+
+        $urlAction = $this->generateUrl('imagecrop_crop', array(
+            'style' => 'style_name',
+            'id' => $id,
+            'fqcn' => $fqcn
+        ), UrlGenerator::ABSOLUTE_URL);
+
+        $urlOverview = str_replace(array('crop', 'style_name'), array('overview', $style), $urlAction);
+
+        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
+            'defaultStyle' => $style,
+            'styles' => $styles,
+            'imageCropUrl' => $urlAction,
+            'action' => 'crop',
+        ));
+
+        $formCropSetting = $this->get('form.factory')->create(CropSettingFormType::class, array(), array(
+            'action' => str_replace('style_name', $style, $urlAction),
+            'imageCrop' => $imageCrop,
+        ));
+
+        $formScalingSetting = $this->get('form.factory')->create(ScalingSettingFormType::class, array(), array(
+            'scaling' => $classUtil->getScaling($imageCrop->getOriginalImageWidth(), $imageCrop->getOriginalImageHeight(), $imageCrop->getWidth(), $imageCrop->getHeight()),
+        ));
+
+        $formCropSetting->handleRequest($request);
+
+        if (true === $formCropSetting->isSubmitted()) {
+            return $this->generateFinalImage($request, $imageCrop, $formCropSetting);
+        }
+
+        return $this->render('ImageCropBundle:Default:crop.html.twig', array(
+            'form_style_selection' => $formStyleSelection->createView(),
+            'form_crop_setting' => $formCropSetting->createView(),
+            'form_scaling_setting' => $formScalingSetting->createView(),
+            'imageCrop' => $imageCrop,
+            'settings' => $settings,
+            'url_overview' => $urlOverview,
+        ));
+    }
+
+    /**
+     * Generate a new scaled version from the image to crop.
      *
      * @param Request $request
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function cropMappingSelectAction(Request $request)
-    {
-        $imageName = $request->query->get('image_name', null);
-        $entityName = $request->query->get('entity_name', null);
-
-        if (null === $imageName) {
-            throw new \InvalidArgumentException('Some required arguments are missing.');
-        }
-
-        $imageCropMappings = $this->getImageCropMappingsAsArray();
-
-        $form = $this->container->get('form.factory')->createBuilder('form')
-            ->add('mapping', 'choice', array(
-                'choices' => $imageCropMappings,
-                'label' => 'form.label.mapping',
-                'translation_domain' => 'ImageCropBundle',
-            ))
-            ->add('submit', 'submit', array(
-                'label' => 'form.label.submit_mapping',
-                'translation_domain' => 'ImageCropBundle',
-            ))
-            ->getForm();
-
-        $form->handleRequest($request);
-
-        $mapping = null;
-        $renderCrop = false;
-
-        if ($form->isValid()) {
-            $mapping = $form->get('mapping')->getData();
-
-            $renderCrop = true;
-        }
-
-        return $this->render('ImageCropBundle:Default:form_mapping.html.twig', array(
-            'form' => $form->createView(),
-            'renderCrop' => $renderCrop,
-            'mapping' => $mapping,
-            'imageName' => $imageName,
-            'entityName' => $entityName,
-        ));
-    }
-
-    /**
-     * Render de form with crop enable.
-     *
-     * @param Request $request
-     * @param $useImageCropMapping
-     * @param $imageName
-     * @param $entityName
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function cropAction(Request $request, $useImageCropMapping, $imageName, $entityName)
-    {
-        $imageCropMappings = $this->getImageCropMappings();
-        $imageCropMapping = $imageCropMappings[$useImageCropMapping];
-        $imageCropLiipImagineFilter = $imageCropMapping['liip_imagine_filter'];
-        $mappingUriPrefix = $imageCropMapping['uri_prefix'];
-
-        $downloadUri = is_array($mappingUriPrefix) ? $mappingUriPrefix[$entityName].'/'.$imageName : $mappingUriPrefix.'/'.$imageName;
-
-        $lippImagineFilterManager = $this->container->get('liip_imagine.filter.manager');
-        $liipImagineFilter = $lippImagineFilterManager->getFilterConfiguration()->get($imageCropLiipImagineFilter);
-
-        list($cropWidth, $cropHeight) = $liipImagineFilter['filters']['thumbnail']['size'];
-
-        // Get the original image data
-        $binary = $this->container->get('liip_imagine.data.manager')->find($imageCropLiipImagineFilter, $downloadUri);
-        $originalImage = $this->get('liip_imagine')->load($binary->getContent());
-
-        $originalWidth = $originalImage->getSize()->getWidth();
-        $originalHeight = $originalImage->getSize()->getHeight();
-
-        // Get scaling options
-        $scaling = $this->container->get('anacona16_image_crop.util.class_util')->getScaling(50, $originalWidth, $originalHeight, $cropWidth, $cropHeight);
-
-        $form = $this->createForm(new ImageCropType($scaling, $downloadUri, $originalWidth, $originalHeight), null, array(
-            'action' => $this->generateUrl('image_crop_crop_image', array('useImageCropMapping' => $useImageCropMapping, 'imageName' => $imageName, 'entityName' => $entityName)),
-        ));
-
-        $form->handleRequest($request);
-
-        if ($form->isValid()) {
-            return $this->processSubmittedForm($form, $lippImagineFilterManager, $binary, $imageCropLiipImagineFilter, $downloadUri);
-        }
-
-        return $this->render('ImageCropBundle:Default:index.html.twig', array(
-            'form' => $form->createView(),
-            'image' => $downloadUri,
-            'height' => $cropHeight,
-            'width' => $cropWidth,
-        ));
-    }
-
-    /**
-     * Process submitted form.
-     *
-     * @param Form $form
-     * @param FilterManager $lippImagineFilterManager
-     * @param BinaryInterface $binary
-     * @param $imageCropLiipImagineFilter
-     * @param $downloadUri
      * @return JsonResponse
+     *
+     * @throws \Exception
      */
-    private function processSubmittedForm(Form $form, FilterManager $lippImagineFilterManager, BinaryInterface $binary, $imageCropLiipImagineFilter, $downloadUri)
+    public function generateTempImageAction(Request $request)
     {
-        try {
-            list($scalingWidth, $scalingHeight) = explode('x', $form->get('scaling')->getData());
+        if (false !== $request->isXmlHttpRequest()) {
+            $result = new \stdClass();
+            $result->success = false;
 
-            $filteredBinary = $lippImagineFilterManager->applyFilter($binary, $imageCropLiipImagineFilter, array(
-                'filters' => array(
-                    'thumbnail' => array(
-                        'size' => array($scalingWidth, $scalingHeight),
-                    ),
-                    'crop' => array(
-                        'start' => array($form->get('cropx')->getData(), $form->get('cropy')->getData()),
-                        'size' => array($form->get('cropw')->getData(), $form->get('croph')->getData()),
-                    ),
-                ),
-            ));
+            $entityID = $request->request->getInt('entityID');
+            $entityFQCN = $request->request->get('entityFQCN', false);
+            $styleName = $request->request->get('style', false);
+            $scale = $request->request->get('scale', false);
 
-            $this->container->get('liip_imagine.cache.manager')->store($filteredBinary, $downloadUri, $imageCropLiipImagineFilter);
+            try {
+                if (0 === $entityID || false === $entityFQCN || false === $styleName || false === $scale) {
+                    throw new \Exception('Required fields are empty');
+                }
 
-            $message = 'form.submit.message';
-        } catch (\Exception $e) {
-            $message = 'form.submit.error';
+                $object = $this->getDoctrine()->getManager()->find($entityFQCN, $entityID);
+
+                $mappingFactory = $this->get('vich_uploader.property_mapping_factory');
+                $mapping = $mappingFactory->fromObject($object, $entityFQCN);
+
+                $imageCrop = $this->get('anacona16_image_crop.util.imagecrop');
+
+                $imageCrop->setEntity($object);
+
+                $imageCrop->loadFile($object, $mapping[0]->getFilePropertyName());
+                $imageCrop->setImageStyle($styleName);
+                $imageCrop->setCropDestinations();
+
+                $imageCrop->setScale($scale);
+                $imageCrop->writeCropreadyImage();
+
+                $result->success = true;
+
+                return new JsonResponse($result);
+            }
+            catch (\Exception $e) {
+                $result->message = $e->getMessage();
+
+                return new JsonResponse($result);
+            }
         }
 
-        return new JsonResponse(array('message' => $this->container->get('translator')->trans($message, array(), 'ImageCropBundle')));
+        $this->createNotFoundException();
     }
 
     /**
-     * Return the bundle configuration.
+     * @param Request $request
+     * @param ImageCrop $imageCrop
+     * @param Form $form
      *
-     * @return mixed
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    private function getImageCropConfig()
+    private function generateFinalImage(Request $request, ImageCrop $imageCrop, Form $form)
     {
-        $imageCropConfig = $this->container->getParameter('image_crop');
+        $data = $form->getData();
 
-        return $imageCropConfig;
-    }
+        $imageCropX = $data['image-crop-x'];
+        $imageCropY = $data['image-crop-y'];
+        $imageCropScale = $data['image-crop-scale'];
 
-    /**
-     * Return the configured mappings.
-     *
-     * @return mixed
-     */
-    private function getImageCropMappings()
-    {
-        $imageCropConfig = $this->getImageCropConfig();
+        $imageCrop->writeCropFinalImage($imageCropX, $imageCropY, $imageCropScale);
 
-        $imageCropMappings = $imageCropConfig['mappings'];
-
-        return $imageCropMappings;
-    }
-
-    /**
-     * Return a kery value array with mappings name.
-     *
-     * @return array
-     */
-    private function getImageCropMappingsAsArray()
-    {
-        $imageCropMappings = $this->getImageCropMappings();
-
-        $mappings = array();
-
-        foreach (array_keys($imageCropMappings) as $mapping) {
-            $mappings[$mapping] = $mapping;
-        }
-
-        return $mappings;
+        return $this->redirectToRoute('imagecrop_overview', array(
+            'style' => $data['style'],
+            'id' => $data['entity-id'],
+            'fqcn' => urlencode($data['entity-fqcn'])
+        ));
     }
 }

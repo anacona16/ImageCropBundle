@@ -12,7 +12,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected $supportedPopup = array('iframe', 'popup', 'bootstrap', 'colorbox');
+    protected $supportedPopup = array('iframe', 'popup', 'bootstrap');
 
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('popup')
+                ->scalarNode('window')
                     ->defaultValue('iframe')
                     ->validate()
                         ->ifNotInArray($this->supportedPopup)
@@ -33,10 +33,12 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->children()
-                ->integerNode('popup_width')
-                    ->defaultValue(500)
+                ->integerNode('window_width')
+                    ->defaultValue(700)
                 ->end()
-                ->integerNode('popup_height')
+            ->end()
+            ->children()
+                ->integerNode('window_height')
                     ->defaultValue(500)
                 ->end()
             ->end()
@@ -46,14 +48,32 @@ class Configuration implements ConfigurationInterface
                 ->end()
             ->end()
             ->children()
+                ->booleanNode('scale_default')
+                    ->defaultValue(false)
+                ->end()
+            ->end()
+            ->children()
                 ->arrayNode('mappings')
-                    ->useAttributeAsKey('name')
+                    ->useAttributeAsKey('entity')
                     ->prototype('array')
                         ->children()
-                            ->variableNode('uri_prefix')->cannotBeEmpty()->end()
-                            ->scalarNode('liip_imagine_filter')->cannotBeEmpty()->end()
+                            ->arrayNode('filters')
+                                ->requiresAtLeastOneElement()
+                                ->useAttributeAsKey('name')
+                                ->prototype('variable')->end()
+                            ->end()
                         ->end()
                     ->end()
+                ->end()
+            ->end()
+            ->children()
+                ->integerNode('orphan_maxage')
+                    ->defaultValue(3600)
+                ->end()
+            ->end()
+            ->children()
+                ->scalarNode('imagine_cache_dir')
+                    ->defaultValue('media/cache')
                 ->end()
             ->end()
         ;

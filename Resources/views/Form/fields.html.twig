@@ -3,8 +3,8 @@
 
         {{ block('form_widget') }}
 
-        {% if image_crop_name is defined and image_crop_name is not null %}
-            {{ render(controller('ImageCropBundle:Default:buttonCrop', {imageName: image_crop_name, entityName: entity_name})) }}
+        {% if entity_id is defined and entity_id is not null %}
+            {{ render(controller('ImageCropBundle:Default:buttonCrop', {fqcn: entity_fqcn, id: entity_id})) }}
         {% endif %}
 
     {% endspaceless %}
@@ -21,16 +21,17 @@
 	        {% endif %}
 
 	        {% if download_uri is defined and download_uri %}
-	        	<a href="{{ download_uri }}"><img src="{{ download_uri }}" alt="" /></a>
+	        	<a href="{{ download_uri }}"><img src="{{ download_uri }}" alt="" width="400" /></a>
 	        {% endif %}
 	        
 	        {% if show_download_link and download_uri is defined and download_uri%}
+                <br>
 	        	<a href="{{ download_uri }}">{{ 'download'|trans({}, 'VichUploaderBundle') }}</a>
 	        {% endif %}
 	    </div>
 
-        {% if image_crop_name is defined and image_crop_name is not null %}
-            {{ render(controller('ImageCropBundle:Default:buttonCrop', {imageName: image_crop_name, entityName: entity_name})) }}
+        {% if entity_id is defined and entity_id is not null %}
+            {{ render(controller('ImageCropBundle:Default:buttonCrop', {fqcn: entity_fqcn, id: entity_id})) }}
         {% endif %}
 
     {% endspaceless %}

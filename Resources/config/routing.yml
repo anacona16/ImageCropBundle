@@ -1,11 +1,11 @@
-image_crop_buttom_crop:
-    path:     /{_locale}/buttom_crop/
-    defaults: { _controller: ImageCropBundle:Default:buttonCrop }
+imagecrop_overview:
+    path:     /{_locale}/overview/{style}/{id}/{fqcn}/
+    defaults: { _controller: ImageCropBundle:Default:overview }
 
-image_crop_select_mapping:
-    path:     /{_locale}/select_mapping/
-    defaults: { _controller: ImageCropBundle:Default:cropMappingSelect }
-
-image_crop_crop_image:
-    path:     /{_locale}/crop_image/{useImageCropMapping}/{imageName}/{entityName}/
+imagecrop_crop:
+    path:     /{_locale}/crop/{style}/{id}/{fqcn}/
     defaults: { _controller: ImageCropBundle:Default:crop }
+
+imagecrop_generate_image:
+    path:     /{_locale}/generate_image
+    defaults: { _controller: ImageCropBundle:Default:generateTempImage }

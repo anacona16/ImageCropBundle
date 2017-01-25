@@ -1,9 +1,13 @@
 image_crop: Crop this image
 message_crop: Resize image if needed, then select a crop area. Click 'Save selection' to save the changes.
+message_overview: This is a preview from the crop settings for current style. Click 'Edit this style' to change the crop settings.
 
-form.label.scaling: Scaling
+label.edit_this_style: Edit this style
+label.cancel_crop: Cancel crop
+
+form.label.style_overview_form: Select style to preview
+form.label.style_crop_form: Select other style to crop
+form.label.scaling: Scale image
 form.label.mapping: Crops
 form.label.submit_mapping: Use crop
 form.label.save: Save selection
-form.submit.message: Saved
-form.submit.error: Error

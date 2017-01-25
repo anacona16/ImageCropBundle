@@ -1,0 +1,23 @@
+{% extends 'ImageCropBundle::layout.html.twig' %}
+
+{% block image_crop_content %}
+    <div id="imagecrop-selection" class="clearfix">
+        {{ form_start(form_style_selection, {'attr': {'id': 'imagecrop-style-selection-form'}}) }}
+            {{ form_row(form_style_selection.styles, {'id': 'edit-styles'}) }}
+            {{ form_row(form_style_selection.imageCropUrl, {'id': 'imagecrop-url'}) }}
+            {{ form_rest(form_style_selection) }}
+        {{ form_end(form_style_selection) }}
+
+        <div id="imagecrop-edit" class="form-item imagecrop-form-link">
+            <a href="{{ url_crop }}">{{ 'label.edit_this_style'|trans({}, 'ImageCropBundle') }}</a>
+        </div>
+    </div>
+
+    <div id="imagecrop-help">
+        {{ 'message_overview'|trans({}, 'ImageCropBundle') }}
+    </div>
+
+    <div id="imagecrop-preview">
+        <img src="{{ vich_uploader_asset(object, file_property_name) | imagine_filter(style_name) }}?v{{ 'now'|date('s') }}" alt="">
+    </div>
+{% endblock %}

@@ -1,9 +1,13 @@
 image_crop: Cortar esta imagen
 message_crop: Redimensione la imagen de ser caso necesario. Pulse en 'Guardar la selección' para guardar los cambios.
+message_overview: Esta es una previsualización de la imagen para el estilo actual. Haga clikc en 'Editar este estilo' para realizar un nuevo recorte.
 
+label.edit_this_style: Edit this style
+label.cancel_crop: Cancel crop
+
+form.label.style_overview_form: Seleccione stilo a previsualizar
+form.label.style_crop_form: Seleccione otro estilo para recortar
 form.label.scaling: Escalar
 form.label.mapping: Recortes
 form.label.submit_mapping: Usar recorte
 form.label.save: Guardar la selección
-form.submit.message: Guardado
-form.submit.error: Error
