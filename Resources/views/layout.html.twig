@@ -6,7 +6,6 @@
 
     {% block assets_header %}
         <link rel="stylesheet" href="{{ asset('bundles/imagecrop/css/imagecrop.css') }}">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     {% endblock assets_header %}
 </head>
     <body class="page-imagecrop">
@@ -18,7 +17,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
             <script src="{{ asset('bundles/imagecrop/js/headers.js') }}"></script>
             <script src="{{ asset('bundles/imagecrop/js/imagecrop.js') }}"></script>
-            <script type="text/javascript" src="{{ asset('bundles/imagecrop/js/imagecrop.ui.crop.js') }}"></script>
+            <script src="{{ asset('bundles/imagecrop/js/imagecrop.ui.crop.js') }}"></script>
         {% endblock assets_footer %}
     </body>
 </html>
