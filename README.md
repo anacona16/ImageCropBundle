@@ -1,7 +1,7 @@
 ImageCrop
 =========
 
-<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/master/Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" align="right" />
+<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/1.0/Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" align="right" />
 
 ImageCrop lets you crop images in Symfony applications, this bundle add a new
 form file field extension.
@@ -35,7 +35,7 @@ Open a command console, enter your project directory and execute the
 following command to download the latest stable version of this bundle:
 
 ```bash
-$ composer require anacona16/imagecrop-bundle
+$ composer require anacona16/imagecrop-bundle "~1.0"
 ```
 
 This command requires you to have Composer installed globally, as explained
