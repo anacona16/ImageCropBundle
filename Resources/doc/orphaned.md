@@ -17,4 +17,5 @@ This command will clean all orphaned files older than the **orphan_maxage** valu
 The configuration assumes that LiipImagineBundle generated image on /web/media/cache dir, if your configuration is 
 different, change ImageCropBundle configuration as well.
 
+----
 Next [Configuration](configuration.md)

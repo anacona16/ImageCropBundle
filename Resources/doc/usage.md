@@ -41,7 +41,6 @@ twig:
         - "ImageCropBundle:Form:fields.html.twig"
 ```
 
-```
 ### Using VichUploaderBundle
 
 ```php
@@ -55,4 +54,5 @@ $builder
 
 That's all, now you can see a new button for crop the image.
 
+---
 Next [Removing orphaned files](orphaned.md)
