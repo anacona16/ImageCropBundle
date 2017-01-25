@@ -44,3 +44,6 @@ Life time of orphaned files.
 **imagine_cache_dir**
 
 The same value as *cache_dir* config on LiipImagineBundle
+
+----
+Next [FAQs](faqs.md)

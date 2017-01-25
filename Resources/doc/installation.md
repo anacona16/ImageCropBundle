@@ -72,4 +72,5 @@ php app/console assets:install --symlink
 
 That's it! Now everything is ready to create your first image crop mapping.
 
+---
 Next [usage](usage.md)
