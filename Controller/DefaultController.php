@@ -25,6 +25,11 @@ class DefaultController extends Controller
      */
     public function buttonCropAction(Request $request, $id, $fqcn)
     {
+        $entityFQCN = urldecode($fqcn);
+        
+        $classUtil = $this->get('anacona16_image_crop.util.class_util');
+        $styles = $classUtil->getStyles($entityFQCN);
+
         $imageCropConfig = $this->getParameter('image_crop');
 
         $imageCropWindow = $imageCropConfig['window'];
@@ -35,7 +40,7 @@ class DefaultController extends Controller
             'image_crop_window' => $imageCropWindow,
             'image_crop_window_width' => $imageCropWindowWidth,
             'image_crop_window_height' => $imageCropWindowHeight,
-            'style_name' => 'post_image_crop',
+            'style_name' => current($styles),
             'entity_id' => $id,
             'entity_fqcn' => $fqcn,
         ]);

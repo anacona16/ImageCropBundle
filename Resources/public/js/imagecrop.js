@@ -1,3 +1,8 @@
+var ImageCrop = ImageCrop || {};
+
+ImageCrop.hasUnsavedChanges = false;
+ImageCrop.settings = ImageCrop.settings || {};
+
 (function ($) {
     $(function () {
         $("#imagecrop-style-selection-form #edit-styles").change(function () {
