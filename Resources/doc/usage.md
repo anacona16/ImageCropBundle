@@ -25,12 +25,15 @@ a thumbnail filter with width and height attributes:
 # app/config/config.yml
 liip_imagine:
     filter_sets:
+        _imagecrop_temp: ~
         post_image:
             filters:
                 crop: { size: [128, 128] }
 ```
 
 This configuration is necessary for set the min/max crop size.
+
+**Please be sure that exists a filter called *_imagecrop_temp: ~* this is mandatory**
 
 After this, you must add this lines to your `app/config/config.yml`
 
