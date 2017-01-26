@@ -1,9 +1,7 @@
 {% set image_crop_url = path('imagecrop_overview', {style: style_name, id: entity_id, fqcn: entity_fqcn}) %}
 
 {% if image_crop_window == 'popup' %}
-    <a onclick="ImageCrop.openPopup(this, {{ image_crop_window_width }}, {{ image_crop_window_height }}); return false;" href="{{ image_crop_url }}">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
-{% elseif image_crop_window == 'colorbox' %}
-    <a class="colorbox-load" href="{{ image_crop_url }}?iframe=true&width={{ image_crop_window_width }}px&height={{ image_crop_window_height }}px" id="linkColorboxImageCrop">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
+    <a onclick="window.open('{{ image_crop_url }}', 'imagecrop', 'menubar=0,scrollbars=1,resizable=1,width={{ image_crop_window_width }},height={{ image_crop_window_height }}'); return false;" href="{{ image_crop_url }}">{{ 'image_crop'|trans({}, 'ImageCropBundle') }}</a>
 {% elseif image_crop_window == 'bootstrap' %}
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalImageCropBundle">
