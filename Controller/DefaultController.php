@@ -5,6 +5,7 @@ namespace Anacona16\Bundle\ImageCropBundle\Controller;
 use Anacona16\Bundle\ImageCropBundle\Form\Type\CropSettingFormType;
 use Anacona16\Bundle\ImageCropBundle\Form\Type\ScalingSettingFormType;
 use Anacona16\Bundle\ImageCropBundle\Form\Type\StyleSelectionFormType;
+use Anacona16\Bundle\ImageCropBundle\Util\ClassUtil;
 use Anacona16\Bundle\ImageCropBundle\Util\ImageCrop;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
@@ -65,13 +66,7 @@ class DefaultController extends Controller
         $classUtil = $this->get('anacona16_image_crop.util.class_util');
         $styles = $classUtil->getStyles($entityFQCN);
 
-        $urlAction = $this->generateUrl('imagecrop_overview', array(
-            'style' => 'style_name',
-            'id' => $id,
-            'fqcn' => $fqcn
-        ), UrlGenerator::ABSOLUTE_URL);
-
-        $urlCrop = str_replace(array('overview', 'style_name'), array('crop', $style), $urlAction);
+        list($urlCrop, $urlAction) = $this->getUrlsAction($style, $id, $fqcn);
 
         $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
             'defaultStyle' => $style,
@@ -128,29 +123,8 @@ class DefaultController extends Controller
             'resizable' => $imageCrop->isResizable(),
         );
 
-        $urlAction = $this->generateUrl('imagecrop_crop', array(
-            'style' => 'style_name',
-            'id' => $id,
-            'fqcn' => $fqcn
-        ), UrlGenerator::ABSOLUTE_URL);
-
-        $urlOverview = str_replace(array('crop', 'style_name'), array('overview', $style), $urlAction);
-
-        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
-            'defaultStyle' => $style,
-            'styles' => $styles,
-            'imageCropUrl' => $urlAction,
-            'action' => 'crop',
-        ));
-
-        $formCropSetting = $this->get('form.factory')->create(CropSettingFormType::class, array(), array(
-            'action' => str_replace('style_name', $style, $urlAction),
-            'imageCrop' => $imageCrop,
-        ));
-
-        $formScalingSetting = $this->get('form.factory')->create(ScalingSettingFormType::class, array(), array(
-            'scaling' => $classUtil->getScaling($imageCrop->getOriginalImageWidth(), $imageCrop->getOriginalImageHeight(), $imageCrop->getWidth(), $imageCrop->getHeight()),
-        ));
+        list($urlAction, $urlOverview) = $this->getUrlsAction($style, $id, $fqcn);
+        list($formStyleSelection, $formCropSetting, $formScalingSetting) = $this->getForms($imageCrop, $classUtil, $style, $styles, $urlAction);
 
         $formCropSetting->handleRequest($request);
 
@@ -237,6 +211,10 @@ class DefaultController extends Controller
         $imageCropY = $data['image-crop-y'];
         $imageCropScale = $data['image-crop-scale'];
 
+        if ('original' === $imageCropScale) {
+            $imageCropScale = $imageCrop->getOriginalImageWidth();
+        }
+
         $imageCrop->writeCropFinalImage($imageCropX, $imageCropY, $imageCropScale);
 
         return $this->redirectToRoute('imagecrop_overview', array(
@@ -244,5 +222,63 @@ class DefaultController extends Controller
             'id' => $data['entity-id'],
             'fqcn' => urlencode($data['entity-fqcn'])
         ));
+    }
+
+    /**
+     * Usefull method to get forms
+     *
+     * @param ImageCrop $imageCrop
+     * @param ClassUtil $classUtil
+     * @param $style
+     * @param $styles
+     * @param $urlAction
+     *
+     * @return array
+     */
+    private function getForms(ImageCrop $imageCrop, ClassUtil $classUtil, $style, $styles, $urlAction)
+    {
+        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
+            'defaultStyle' => $style,
+            'styles' => $styles,
+            'imageCropUrl' => $urlAction,
+            'action' => 'crop',
+        ));
+
+        $formCropSetting = $this->get('form.factory')->create(CropSettingFormType::class, array(), array(
+            'action' => str_replace('style_name', $style, $urlAction),
+            'imageCrop' => $imageCrop,
+        ));
+
+        $formScalingSetting = $this->get('form.factory')->create(ScalingSettingFormType::class, array(), array(
+            'scaling' => $classUtil->getScaling($imageCrop->getOriginalImageWidth(), $imageCrop->getOriginalImageHeight(), $imageCrop->getWidth(), $imageCrop->getHeight()),
+        ));
+
+        return array($formStyleSelection, $formCropSetting, $formScalingSetting);
+    }
+
+    /**
+     * Useful method to generate urls
+     *
+     * @param $styleName
+     * @param $id
+     * @param $fqcn
+     *
+     * @return array
+     */
+    private function getUrlsAction($styleName, $id, $fqcn)
+    {
+        $urlCropAction = $this->generateUrl('imagecrop_crop', array(
+            'style' => $styleName,
+            'id' => $id,
+            'fqcn' => $fqcn
+        ), UrlGenerator::ABSOLUTE_URL);
+
+        $urlOverviewAction = $this->generateUrl('imagecrop_overview', array(
+            'style' => $styleName,
+            'id' => $id,
+            'fqcn' => $fqcn
+        ), UrlGenerator::ABSOLUTE_URL);
+
+        return array($urlCropAction, $urlOverviewAction);
     }
 }
