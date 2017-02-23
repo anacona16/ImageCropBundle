@@ -35,7 +35,7 @@ ImageCrop.cropUi = ImageCrop.cropUi || {};
         ImageCrop.resizeMe = $('#resizeMe');
         ImageCrop.cropUi.cropContainer = $('#image-crop-container');
 
-        if (ImageCrop.resizeMe.resizable) {
+        if (ImageCrop.resizeMe.resizable && ImageCrop.settings.resizable) {
             ImageCrop.resizeMe.resizable({
                 containment: ImageCrop.cropUi.cropContainer,
                 aspectRatio: ImageCrop.settings.resizeAspectRatio,
