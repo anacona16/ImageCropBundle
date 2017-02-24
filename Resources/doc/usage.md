@@ -13,7 +13,7 @@ image_crop:
     window: popup
     
     mappings:
-        AppBundle\Entity\Post
+        AppBundle\Entity\Post:
             filters:
                 - imagine_filter_name
 ```
