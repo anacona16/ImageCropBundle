@@ -3,8 +3,8 @@ Installation
 
 **Requirements**
 
-  * LiipImagineBundle.
-  * VichUploaderBundle.
+  * [LiipImagineBundle.](https://github.com/liip/LiipImagineBundle)
+  * [VichUploaderBundle.](https://github.com/dustin10/VichUploaderBundle)
 
 Please install each bundle following their instructions.
 
