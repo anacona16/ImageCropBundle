@@ -1,7 +1,14 @@
 # .github/workflows/code_checks.yaml
 name: Code_Checks
 
-on: ["push", "pull_request"]
+#on: ["push", "pull_request"]
+
+on:
+  pull_request: null
+  push:
+    branches:
+      - master
+      - dev
 
 jobs:
   tests:
