@@ -1,11 +1,11 @@
 imagecrop_overview:
     path:     /{_locale}/overview/{style}/{id}/{fqcn}/
-    defaults: { _controller: ImageCropBundle:Default:overview }
+    defaults: { _controller: Anacona16\Bundle\ImageCropBundle\Controller\DefaultController::overview }
 
 imagecrop_crop:
     path:     /{_locale}/crop/{style}/{id}/{fqcn}/
-    defaults: { _controller: ImageCropBundle:Default:crop }
+    defaults: { _controller: Anacona16\Bundle\ImageCropBundle\Controller\DefaultController::crop }
 
 imagecrop_generate_image:
     path:     /{_locale}/generate_image
-    defaults: { _controller: ImageCropBundle:Default:generateTempImage }
+    defaults: { _controller: Anacona16\Bundle\ImageCropBundle\Controller\DefaultController::generateTempImage }

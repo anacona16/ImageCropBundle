@@ -2,41 +2,54 @@
 
 namespace Anacona16\Bundle\ImageCropBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-class ClearOrphansCommand extends ContainerAwareCommand
+# For use after Support of Symfony <5 is dropped
+##[AsCommand(name: 'imagecrop:clear-orphans', description: 'Clear orphaned crops according to the orphan_maxage you defined in your configuration.')]
+class ClearOrphansCommand extends Command
 {
-    protected function configure()
+    public function __construct(protected ParameterBag $parameterBag)
     {
+        parent::__construct();
+    }
+
+    # For lazy loading (remove after Support of Symfony <5 is dropped)
+    protected static $defaultName = 'imagecrop:clear-orphans';
+    protected static $defaultDescription = 'Clear orphaned crops according to the orphan_maxage you defined in your configuration.';
+
+    protected function configure(): void
+    {
+        # remove after Support of Symfony <5 is dropped
         $this
             ->setName('imagecrop:clear-orphans')
             ->setDescription('Clear orphaned crops according to the orphan_maxage you defined in your configuration.')
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = $this->getContainer()->getParameter('image_crop');
-        $kernelRootDir = $this->getContainer()->getParameter('kernel.root_dir');
+        $config = $this->parameterBag->get('image_crop');
 
-        $webRootDir = "$kernelRootDir/../web/";
-        $imagineCacheDir = $webRootDir . $config['imagine_cache_dir'];
+        $imagineCacheDir = $this->parameterBag->get('kernel.project_dir')."/public/" . $config['imagine_cache_dir'];
         $filterTempDir = "$imagineCacheDir/_imagecrop_temp";
 
         $system = new Filesystem();
         $finder = new Finder();
 
         try {
+            # filter files by date
             $finder->in($filterTempDir)->date('<=' . -1 * (int) $config['orphan_maxage'] . 'seconds')->files();
         } catch (\InvalidArgumentException $e) {
             // the finder will throw an exception of type InvalidArgumentException
             // if the directory he should search in does not exist
             // in that case we don't have anything to clean
-            return;
+            return 0;
         }
 
         foreach ($finder as $file) {
@@ -44,6 +57,7 @@ class ClearOrphansCommand extends ContainerAwareCommand
 
             $output->writeln(sprintf('File %s removed', $file));
         }
-    }
 
+        return 0;
+    }
 }

@@ -12,8 +12,6 @@ class StyleSelectionFormType extends AbstractType
 {
     /**
      * Add the image_path option
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -25,10 +23,6 @@ class StyleSelectionFormType extends AbstractType
         ));
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder

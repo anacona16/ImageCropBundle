@@ -7,24 +7,20 @@ use Anacona16\Bundle\ImageCropBundle\Form\Type\ScalingSettingFormType;
 use Anacona16\Bundle\ImageCropBundle\Form\Type\StyleSelectionFormType;
 use Anacona16\Bundle\ImageCropBundle\Util\ClassUtil;
 use Anacona16\Bundle\ImageCropBundle\Util\ImageCrop;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     /**
      * This action show the button crop.
-     *
-     * @param Request $request
-     * @param $id
-     * @param $fqcn
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function buttonCropAction(Request $request, $id, $fqcn)
+    public function buttonCrop(Request $request, $id, $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
         
@@ -47,15 +43,7 @@ class DefaultController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @param $style
-     * @param $id
-     * @param $fqcn
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function overviewAction(Request $request, $style, $id, $fqcn)
+    public function overview(Request $request, $style, $id, $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
@@ -66,7 +54,7 @@ class DefaultController extends Controller
         $classUtil = $this->get('anacona16_image_crop.util.class_util');
         $styles = $classUtil->getStyles($entityFQCN);
 
-        list($urlCrop, $urlAction) = $this->getUrlsAction($style, $id, $fqcn);
+        list($urlCrop, $urlAction) = $this->getUrls($style, $id, $fqcn);
 
         $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
             'defaultStyle' => $style,
@@ -84,15 +72,7 @@ class DefaultController extends Controller
         ));
     }
 
-    /**
-     * @param Request $request
-     * @param $style
-     * @param $id
-     * @param $fqcn
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function cropAction(Request $request, $style, $id, $fqcn)
+    public function crop(Request $request, $style, $id, $fqcn): RedirectResponse|Response
     {
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
@@ -123,7 +103,7 @@ class DefaultController extends Controller
             'resizable' => $imageCrop->isResizable(),
         );
 
-        list($urlAction, $urlOverview) = $this->getUrlsAction($style, $id, $fqcn);
+        list($urlAction, $urlOverview) = $this->getUrls($style, $id, $fqcn);
         list($formStyleSelection, $formCropSetting, $formScalingSetting) = $this->getForms($imageCrop, $classUtil, $style, $styles, $urlAction);
 
         $formCropSetting->handleRequest($request);
@@ -145,12 +125,9 @@ class DefaultController extends Controller
     /**
      * Generate a new scaled version from the image to crop.
      *
-     * @param Request $request
-     * @return JsonResponse
-     *
      * @throws \Exception
      */
-    public function generateTempImageAction(Request $request)
+    public function generateTempImage(Request $request): ?JsonResponse
     {
         if (false !== $request->isXmlHttpRequest()) {
             $result = new \stdClass();
@@ -194,16 +171,12 @@ class DefaultController extends Controller
         }
 
         $this->createNotFoundException();
+
+        return null;
     }
 
-    /**
-     * @param Request $request
-     * @param ImageCrop $imageCrop
-     * @param Form $form
-     *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    private function generateFinalImage(Request $request, ImageCrop $imageCrop, Form $form)
+
+    private function generateFinalImage(Request $request, ImageCrop $imageCrop, Form $form): RedirectResponse
     {
         $data = $form->getData();
 
@@ -225,17 +198,9 @@ class DefaultController extends Controller
     }
 
     /**
-     * Usefull method to get forms
-     *
-     * @param ImageCrop $imageCrop
-     * @param ClassUtil $classUtil
-     * @param $style
-     * @param $styles
-     * @param $urlAction
-     *
-     * @return array
+     * Usefully method to get forms
      */
-    private function getForms(ImageCrop $imageCrop, ClassUtil $classUtil, $style, $styles, $urlAction)
+    private function getForms(ImageCrop $imageCrop, ClassUtil $classUtil, $style, $styles, $urlAction): array
     {
         $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
             'defaultStyle' => $style,
@@ -256,28 +221,19 @@ class DefaultController extends Controller
         return array($formStyleSelection, $formCropSetting, $formScalingSetting);
     }
 
-    /**
-     * Useful method to generate urls
-     *
-     * @param $styleName
-     * @param $id
-     * @param $fqcn
-     *
-     * @return array
-     */
-    private function getUrlsAction($styleName, $id, $fqcn)
+    private function getUrls($styleName, $id, $fqcn): array
     {
         $urlCropAction = $this->generateUrl('imagecrop_crop', array(
             'style' => $styleName,
             'id' => $id,
             'fqcn' => $fqcn
-        ), UrlGenerator::ABSOLUTE_URL);
+        ), UrlGeneratorInterface::ABSOLUTE_URL);
 
         $urlOverviewAction = $this->generateUrl('imagecrop_overview', array(
             'style' => $styleName,
             'id' => $id,
             'fqcn' => $fqcn
-        ), UrlGenerator::ABSOLUTE_URL);
+        ), UrlGeneratorInterface::ABSOLUTE_URL);
 
         return array($urlCropAction, $urlOverviewAction);
     }

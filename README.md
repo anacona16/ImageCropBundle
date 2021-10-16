@@ -1,14 +1,12 @@
 ImageCrop
 =========
 
-<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/2.0/Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" align="right" />
+<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/2.0/Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" />
 
 ImageCrop lets you crop images in Symfony applications, this bundle add a new
 form file field extension.
 
 **This bundle don't have an upload utility.**
-
-**This is the second version of the bundle, this bundle change drastically, it have a new dependecy: _VichUploaderBUndle_ and improve the process to crop the images**
 
 **Features**
 
@@ -16,15 +14,10 @@ form file field extension.
   * Allow scaling images
   * Allow crop already uploaded images
 
-**Requirements**
-
-  * Symfony 2.8+ applications (Silex not supported).
-  * LiipImagineBundle.
-  * VichUploaderBundle.
-
 **Documentation**
 
 [Resources/doc/](Resources/doc/index.md)
+[CHANGELOG](CHANGELOG.md)
 
 -----
 

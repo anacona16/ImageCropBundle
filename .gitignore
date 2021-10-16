@@ -29,9 +29,15 @@
 # PHPUnit
 /app/phpunit.xml
 /phpunit.xml
+.phpunit.result.cache
 
 # Build data
 /build/
+/var/
 
-# Composer PHAR
-/composer.phar
+# Composer
+composer.phar
+composer.lock
+
+# IDE
+.idea

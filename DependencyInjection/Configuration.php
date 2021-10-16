@@ -12,17 +12,16 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
-    protected $supportedPopup = array('iframe', 'popup', 'bootstrap');
+    protected array $supportedPopup = ['iframe', 'popup', 'bootstrap'];
 
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('image_crop', 'array');
+        $treeBuilder = new TreeBuilder('image_crop');
 
-        $rootNode
+        $treeBuilder->getRootNode()
             ->children()
                 ->scalarNode('window')
                     ->defaultValue('iframe')

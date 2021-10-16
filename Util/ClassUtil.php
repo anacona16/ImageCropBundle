@@ -4,28 +4,14 @@ namespace Anacona16\Bundle\ImageCropBundle\Util;
 
 class ClassUtil
 {
-    /**
-     * @var array
-     */
-    private $imageCropSettings;
-
-    /**
-     * ClassUtil constructor.
-     * @param array $imageCropSettings
-     */
-    public function __construct(array $imageCropSettings)
+    public function __construct(private array $imageCropSettings)
     {
-        $this->imageCropSettings = $imageCropSettings;
     }
 
     /**
      * Return list of styles for use on form.
-     *
-     * @param $entity
-     *
-     * @return array
      */
-    public function getStyles($entity)
+    public function getStyles($entity): array
     {
         $styles = array();
 
@@ -38,15 +24,8 @@ class ClassUtil
 
     /**
      * Return the scale options.
-     *
-     * @param $originalImageWidth
-     * @param $originalImageHeight
-     * @param $cropWidth
-     * @param $cropHeight
-     *
-     * @return array
      */
-    public function getScaling($originalImageWidth, $originalImageHeight, $cropWidth, $cropHeight)
+    public function getScaling(int $originalImageWidth, int $originalImageHeight, int $cropWidth, int $cropHeight): array
     {
         $step = $this->imageCropSettings['scale_step'];
         $image_width = $scale_width = $originalImageWidth;

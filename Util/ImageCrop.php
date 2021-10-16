@@ -10,110 +10,58 @@ use Vich\UploaderBundle\Storage\StorageInterface;
 
 class ImageCrop
 {
-    private $allowedExtensions = array('image/jpeg', 'image/gif', 'image/png', 'image/pjpeg');
-    private $inCroppingMode = false;
-    private $skipPreview = false;
-    private $extraControls = false;
+    private array $allowedExtensions = array('image/jpeg', 'image/gif', 'image/png', 'image/pjpeg');
+    private bool $inCroppingMode = false;
+    private bool $skipPreview = true;
+    private bool $extraControls = false;
 
     private $file;
     private $imageStyle;
-    private $propertyName = 'none';
+    private string $propertyName = 'none';
     private $styleDestination;
-    private $imageWidth;
-    private $imageHeight;
-    private $originalImageWidth;
-    private $originalImageHeight;
+    private int $imageWidth;
+    private int $imageHeight;
+    private int $originalImageWidth;
+    private int $originalImageHeight;
 
-    private $isResizable = false;
-    private $downscalingAllowed = false;
-    private $resizeAspectRatio = false;
-    private $width = 0;
-    private $startWidth = 0;
-    private $height = 0;
-    private $startHeight = 0;
-    private $xoffset = 0;
-    private $yoffset = 0;
-    private $scale = 'original';
-    private $disableIfNoData = false;
-    private $hasSettings = false;
+    private bool $isResizable = false;
+    private bool $downscalingAllowed = false;
+    private bool $resizeAspectRatio = false;
+    private int $width = 0;
+    private int $startWidth = 0;
+    private int $height = 0;
+    private int $startHeight = 0;
+    private int $xoffset = 0;
+    private int $yoffset = 0;
+    private string $scale = 'original';
+    private bool $disableIfNoData = false;
+    private bool $hasSettings = false;
 
     /**
      * @var object
      */
     private $entity;
 
-    /**
-     * @var array
-     */
-    private $imageCropSettings;
-
-    /**
-     * @var StorageInterface
-     */
-    private $vichStorage;
-
-    /**
-     * @var DataManager
-     */
-    private $imagineDataManager;
-
-    /**
-     * @var FilterConfiguration
-     */
-    private $imagineFilterConfiguration;
-
-    /**
-     * @var FilterManager
-     */
-    private $imagineFilterManager;
-
-    /**
-     * @var CacheManager
-     */
-    private $imagineCacheManager;
-
-    /**
-     * Construct ImageCrop.
-     *
-     * @param array $imageCropSettings
-     * @param StorageInterface $storage
-     * @param DataManager $dataManager
-     * @param FilterConfiguration $filterConfiguration
-     * @param FilterManager $filterManager
-     * @param CacheManager $cacheManager
-     */
     public function __construct(
-        array $imageCropSettings,
-        StorageInterface $storage,
-        DataManager $dataManager,
-        FilterConfiguration $filterConfiguration,
-        FilterManager $filterManager,
-        CacheManager $cacheManager
+        private array $imageCropSettings,
+        private StorageInterface $storage,
+        private DataManager $dataManager,
+        private FilterConfiguration $filterConfiguration,
+        private FilterManager $filterManager,
+        private CacheManager $cacheManager
     )
     {
-        $this->skipPreview = true;
-        $this->extraControls = false;
-
-        $this->imageCropSettings = $imageCropSettings;
-        $this->vichStorage = $storage;
-        $this->imagineDataManager = $dataManager;
-        $this->imagineFilterConfiguration = $filterConfiguration;
-        $this->imagineFilterManager = $filterManager;
-        $this->imagineCacheManager = $cacheManager;
     }
 
     /**
      * Load the imagecrop settings for the given fid or filesource.
      *
-     * @param $object
-     * @param $propertyName
-     *
      * @throws \Exception
      */
-    public function loadFile($object, $propertyName)
+    public function loadFile($object, string $propertyName)
     {
-        $filePath = $this->vichStorage->resolvePath($object, $propertyName);
-        $fileUri = $this->vichStorage->resolveUri($object, $propertyName);
+        $filePath = $this->storage->resolvePath($object, $propertyName);
+        $fileUri = $this->storage->resolveUri($object, $propertyName);
 
         $this->file = new \stdClass();
         $this->file->uri = $fileUri;
@@ -131,178 +79,113 @@ class ImageCrop
         }
     }
 
-    /**
-     * Get the current file.
-     */
     public function getFile()
     {
         return $this->file;
     }
 
-    /**
-     * Set the current file
-     *
-     * @param $file
-     */
     public function setFile($file)
     {
         $this->file = $file;
     }
 
-    /**
-     * @return array
-     */
-    public function getImageCropSettings()
+    public function getImageCropSettings(): array
     {
         return $this->imageCropSettings;
     }
 
-    /**
-     * @param array $imageCropSettings
-     */
-    public function setImageCropSettings($imageCropSettings)
+    public function setImageCropSettings(array $imageCropSettings)
     {
         $this->imageCropSettings = $imageCropSettings;
     }
 
-    /**
-     * @return object
-     */
-    public function getEntity()
+    public function getEntity(): object
     {
         return $this->entity;
     }
 
-    /**
-     * @param object $entity
-     */
-    public function setEntity($entity)
+    public function setEntity(object $entity)
     {
         $this->entity = $entity;
     }
 
     /**
      * Set the field name from the current imagecrop.
-     *
-     * @param $propertyName
      */
-    public function setPropertyName($propertyName)
+    public function setPropertyName(string $propertyName)
     {
         $this->propertyName = $propertyName;
     }
 
-    /**
-     * Get the field name from the current imagecrop.
-     */
-    public function getPropertyName()
+    public function getPropertyName(): string
     {
         return $this->propertyName;
     }
 
-    /**
-     * Is the crop resizable or not.
-     */
-    public function isResizable()
+    public function isResizable(): bool
     {
         return $this->isResizable;
     }
 
-    /**
-     * Get the X offset from the current imagecrop object.
-     */
-    public function getXOffset()
+    public function getXOffset(): int
     {
         return $this->xoffset;
     }
 
-    /**
-     * Get the X offset from the current imagecrop object.
-     */
-    public function getYOffset()
+    public function getYOffset(): int
     {
         return $this->yoffset;
     }
 
-    /**
-     * Get the width from the current crop area.
-     */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width;
     }
 
-    /**
-     * Get the height from the current crop area.
-     */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height;
     }
 
-    /**
-     * Get the width from the image to crop.
-     */
-    public function getImageWidth()
+    public function getImageWidth(): int
     {
         return $this->imageWidth;
     }
 
-    /**
-     * Get the original width from the image to crop.
-     */
-    public function getOriginalImageWidth()
+    public function getOriginalImageWidth(): int
     {
         return $this->originalImageWidth;
     }
 
-    /**
-     * Set the scaling width from the image to crop.
-     *
-     * @param $scale
-     */
-    public function setScale($scale)
+    public function setScale(string $scale)
     {
         $this->scale = $scale;
     }
 
-    /**
-     * Get the scaling from the image to crop.
-     */
-    public function getScale()
+    public function getScale(): string
     {
         return $this->scale;
     }
 
-    /**
-     * Get the height from the image to crop.
-     */
-    public function getImageHeight()
+    public function getImageHeight(): int
     {
         return $this->imageHeight;
     }
 
-    /**
-     * Get the original height from the image to crop.
-     */
-    public function getOriginalImageHeight()
+    public function getOriginalImageHeight(): int
     {
         return $this->originalImageHeight;
     }
 
     /**
      * Set the status of cropping mode (true = busy cropping).
-     *
-     * @param $inCroppingMode
      */
-    public function setInCroppingMode($inCroppingMode)
+    public function setInCroppingMode(bool $inCroppingMode)
     {
         $this->inCroppingMode = $inCroppingMode;
     }
 
-    /**
-     * Get the current value for cropping mode.
-     */
-    public function getInCroppingMode()
+    public function getInCroppingMode(): bool
     {
         return $this->inCroppingMode;
     }
@@ -310,13 +193,11 @@ class ImageCrop
     /**
      * Set the current cropped image style.
      *
-     * @param $styleName
-     *
      * @throws \Exception
      */
-    public function setImageStyle($styleName)
+    public function setImageStyle(string $styleName)
     {
-        $this->imageStyle = $this->imagineFilterConfiguration->get($styleName);
+        $this->imageStyle = $this->filterConfiguration->get($styleName);
         $this->imageStyle['name'] = $styleName;
 
         // add default settings
@@ -351,24 +232,18 @@ class ImageCrop
         }
     }
 
-    /**
-     * Get the current cropped image style.
-     */
     public function getImageStyle()
     {
         return $this->imageStyle;
     }
 
-    /**
-     * Set the crop destinations.
-     */
     public function setCropDestinations()
     {
-        $image = $this->imagineDataManager->find('_imagecrop_temp', $this->file->uri);
-        $image = $this->imagineFilterManager->applyFilter($image, '_imagecrop_temp');
-        $this->imagineCacheManager->store($image, $this->file->uri, '_imagecrop_temp');
+        $image = $this->dataManager->find('_imagecrop_temp', $this->file->uri);
+        $image = $this->filterManager->applyFilter($image, '_imagecrop_temp');
+        $this->cacheManager->store($image, $this->file->uri, '_imagecrop_temp');
 
-        $this->styleDestination = $this->imagineCacheManager->getBrowserPath($this->file->uri, '_imagecrop_temp');
+        $this->styleDestination = $this->cacheManager->getBrowserPath($this->file->uri, '_imagecrop_temp');
     }
 
     /**
@@ -445,37 +320,19 @@ class ImageCrop
         }
 
         if (!is_numeric($this->xoffset)) {
-            switch ($this->xoffset) {
-                case 'right':
-                    $this->xoffset = $this->imageWidth - $this->width;
-                    break;
-
-                case 'center':
-                    $this->xoffset = round(($this->imageWidth / 2) - ($this->width / 2));
-                    break;
-
-                case 'left':
-                default:
-                    $this->xoffset = 0;
-                    break;
-            }
+            $this->xoffset = match ($this->xoffset) {
+                'right' => $this->imageWidth - $this->width,
+                'center' => round(($this->imageWidth / 2) - ($this->width / 2)),
+                default => 0,
+            };
         }
 
         if (!is_numeric($this->yoffset)) {
-            switch ($this->yoffset) {
-                case 'bottom':
-                    $this->yoffset = $this->imageHeight - $this->height;
-                    break;
-
-                case 'center':
-                    $this->yoffset = round(($this->imageHeight / 2) - ($this->height / 2));
-                    break;
-
-                case 'top':
-                default:
-                    $this->yoffset = 0;
-                    break;
-            }
+            $this->yoffset = match ($this->yoffset) {
+                'bottom' => $this->imageHeight - $this->height,
+                'center' => round(($this->imageHeight / 2) - ($this->height / 2)),
+                default => 0,
+            };
         }
     }
 
@@ -501,19 +358,15 @@ class ImageCrop
             );
         }
 
-        $image = $this->imagineDataManager->find('_imagecrop_temp', $this->file->uri);
-        $image = $this->imagineFilterManager->apply($image, $style);
-        $this->imagineCacheManager->store($image, $this->file->uri, '_imagecrop_temp');
+        $image = $this->dataManager->find('_imagecrop_temp', $this->file->uri);
+        $image = $this->filterManager->apply($image, $style);
+        $this->cacheManager->store($image, $this->file->uri, '_imagecrop_temp');
     }
 
     /**
-     * Write the file to crop, and apply all effects, untill the imagecrop effects cropping can be done.
-     *
-     * @param $imageCropX
-     * @param $imageCropY
-     * @param $imageCropScale
+     * Write the file to crop, and apply all effects, until the imagecrop effects cropping can be done.
      */
-    public function writeCropFinalImage($imageCropX, $imageCropY, $imageCropScale)
+    public function writeCropFinalImage(int $imageCropX, int $imageCropY, $imageCropScale)
     {
         $style = $this->imageStyle;
 
@@ -529,21 +382,17 @@ class ImageCrop
 
         $style['filters']['crop'] = $cropFilter;
 
-        $image = $this->imagineDataManager->find($style['name'], $this->file->uri);
-        $image = $this->imagineFilterManager->apply($image, $style);
-        $this->imagineCacheManager->store($image, $this->file->uri, $style['name']);
+        $image = $this->dataManager->find($style['name'], $this->file->uri);
+        $image = $this->filterManager->apply($image, $style);
+        $this->cacheManager->store($image, $this->file->uri, $style['name']);
 
-        $this->imagineCacheManager->remove($this->file->uri, '_imagecrop_temp');
+        $this->cacheManager->remove($this->file->uri, '_imagecrop_temp');
     }
 
     /**
      * Add all the files for the cropping UI.
-     *
-     * @param $inCroppingMode
-     *
-     * @return array
      */
-    public function addImagecropUi($inCroppingMode)
+    public function addImagecropUi(bool $inCroppingMode): array
     {
         $settings = array();
 

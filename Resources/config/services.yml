@@ -18,3 +18,14 @@ services:
         class: Anacona16\Bundle\ImageCropBundle\Util\ClassUtil
         arguments:
             - "%image_crop%"
+
+    Anacona16\Bundle\ImageCropBundle\Controller\DefaultController:
+        #class: Anacona16\Bundle\ImageCropBundle\Controller\DefaultController
+        public: true
+        autowire: true
+        tags: [container.service_subscriber]
+
+    Anacona16\Bundle\ImageCropBundle\Command\ClearOrphansCommand:
+        arguments:
+            - "@parameter_bag"
+        tags: [ console.command ]

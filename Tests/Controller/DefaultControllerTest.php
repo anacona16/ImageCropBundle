@@ -6,12 +6,35 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndex()
+    public function testGenerateImageMissingParams()
     {
         $client = static::createClient();
+        $client->followRedirects();
 
-        $crawler = $client->request('GET', '/hello/Fabien');
+        $crawler = $client->xmlHttpRequest('GET', '/en/generate_image');
+        $result = json_decode($client->getResponse()->getContent(), true);
 
-        $this->assertTrue($crawler->filter('html:contains("Hello Fabien")')->count() > 0);
+        $this->assertFalse($result["success"]);
+        $this->assertSame("Required fields are empty", $result["message"]);
     }
+
+    /*
+    public function testOverview()
+    {
+        $client = static::createClient();
+        $client->followRedirects();
+
+        #$crawler = $client->xmlHttpRequest('GET', '/en/overview');
+
+        #/{_locale}/overview/{style}/{id}/{fqcn}/
+        $crawler = $client->request('GET', '/en/overview/{style}/{id}/{fqcn}/');
+
+        $result = json_decode($client->getResponse()->getContent(), true);
+        #var_dump($result);
+
+        $this->assertFalse($result["success"]);
+        $this->assertSame("Required fields are empty", $result["message"]);
+
+        #$this->assertTrue($crawle->filter('html:contains("Hello Fabien")')->count() > 0);
+    }*/
 }
