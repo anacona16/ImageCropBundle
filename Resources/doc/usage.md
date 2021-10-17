@@ -55,6 +55,8 @@ $builder
 ;
 ```
 
+Follow the instructions of [usage of VichUploaderBundle](https://github.com/dustin10/VichUploaderBundle/blob/master/docs/usage.md)
+
 That's all, now you can see a new button for crop the image.
 
 ---
