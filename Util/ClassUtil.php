@@ -11,9 +11,9 @@ class ClassUtil
     /**
      * Return list of styles for use on form.
      */
-    public function getStyles($entity): array
+    public function getStyles(string $entity): array
     {
-        $styles = array();
+        $styles = [];
 
         foreach ($this->imageCropSettings['mappings'][$entity]['filters'] as $key => $filter) {
             $styles[$filter] = $filter;
@@ -34,7 +34,7 @@ class ClassUtil
         $crop_width = $cropWidth;
         $crop_height = $cropHeight;
 
-        $options = array();
+        $options = [];
         if ($step > 0) {
             $options[$image_width . 'x' . $image_height] = $image_width . ' x ' . $image_height . 'px (Original)';
             $scale_width -= $step;

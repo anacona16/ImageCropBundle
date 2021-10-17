@@ -15,26 +15,26 @@ class StyleSelectionFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined(array(
+        $resolver->setDefined([
             'defaultStyle',
             'styles',
             'imageCropUrl',
             'action'
-        ));
+        ]);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('styles', ChoiceType::class, array(
+            ->add('styles', ChoiceType::class, [
                 'label' => 'crop' === $options['action'] ? 'form.label.style_crop_form' : 'form.label.style_overview_form',
                 'choices' => $options['styles'],
                 'data' => $options['defaultStyle'],
                 'translation_domain' => 'ImageCropBundle',
-            ))
-            ->add('imageCropUrl', HiddenType::class, array(
+            ])
+            ->add('imageCropUrl', HiddenType::class, [
                 'data' => $options['imageCropUrl'],
-            ))
+            ])
         ;
     }
 }

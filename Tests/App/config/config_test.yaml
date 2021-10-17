@@ -11,7 +11,7 @@ framework:
     translator:      ~
     secret:          secret
     test:            true
-    router:          { resource: "%kernel.project_dir%/Tests/App/config/routing.yml" }
+    router:          { resource: "%kernel.project_dir%/Tests/App/config/routing.yaml" }
     session:
         storage_factory_id: session.storage.factory.mock_file
     profiler:

@@ -37,7 +37,7 @@ class ClearOrphansCommand extends Command
         $config = $this->parameterBag->get('image_crop');
 
         $imagineCacheDir = $this->parameterBag->get('kernel.project_dir')."/public/" . $config['imagine_cache_dir'];
-        $filterTempDir = "$imagineCacheDir/_imagecrop_temp";
+        $filterTempDir = $imagineCacheDir."/_imagecrop_temp";
 
         $system = new Filesystem();
         $finder = new Finder();

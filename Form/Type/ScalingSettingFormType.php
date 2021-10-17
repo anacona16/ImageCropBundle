@@ -14,7 +14,7 @@ class ScalingSettingFormType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined(array('scaling'));
+        $resolver->setDefined(['scaling']);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -22,11 +22,11 @@ class ScalingSettingFormType extends AbstractType
         $optionsScaling = $options['scaling'];
 
         $builder
-            ->add('scaling', ChoiceType::class, array(
+            ->add('scaling', ChoiceType::class, [
                 'label' => 'form.label.scaling',
                 'choices' => $optionsScaling,
                 'translation_domain' => 'ImageCropBundle',
-            ))
+            ])
         ;
     }
 }

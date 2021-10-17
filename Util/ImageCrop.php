@@ -337,7 +337,7 @@ class ImageCrop
     }
 
     /**
-     * Write the file to crop, and apply all effects, untill the imagecrop effects cropping can be done.
+     * Write the file to crop, and apply all effects, until the imagecrop effects cropping can be done.
      */
     public function writeCropreadyImage()
     {
@@ -353,9 +353,9 @@ class ImageCrop
         }
 
         if ($this->scale !== 'original') {
-            $style['filters']['scale'] = array(
-                'dim' => array($this->scale),
-            );
+            $style['filters']['scale'] = [
+                'dim' => [$this->scale],
+            ];
         }
 
         $image = $this->dataManager->find('_imagecrop_temp', $this->file->uri);
@@ -373,9 +373,9 @@ class ImageCrop
         $cropFilter = $style['filters']['crop'];
         unset($style['filters']['crop']);
 
-        $style['filters']['scale'] = array(
-            'dim' => array($imageCropScale),
-        );
+        $style['filters']['scale'] = [
+            'dim' => [$imageCropScale],
+        ];
 
         $cropFilter['start'][0] = $imageCropX;
         $cropFilter['start'][1] = $imageCropY;
@@ -394,7 +394,7 @@ class ImageCrop
      */
     public function addImagecropUi(bool $inCroppingMode): array
     {
-        $settings = array();
+        $settings = [];
 
         // Add crop ui if in cropping mode.
         if ($inCroppingMode) {

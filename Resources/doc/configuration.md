@@ -39,7 +39,7 @@ Set the FQCN for each entity where you want to use the ImageCropBundle
     
 **orphan_maxage**
 
-Life time of orphaned files.
+Life time of orphaned files (in seconds).
 
 **imagine_cache_dir**
 

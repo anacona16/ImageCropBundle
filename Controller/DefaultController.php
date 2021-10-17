@@ -18,17 +18,14 @@ use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
 
 class DefaultController extends AbstractController
 {
-    public function __construct(ClassUtil $classUtil, PropertyMappingFactory $mappingFactory, ImageCrop $imageCrop)
+    public function __construct(
+        private ClassUtil $classUtil,
+        private PropertyMappingFactory $mappingFactory,
+        private ImageCrop $imageCrop)
     {
-        $this->classUtil = $classUtil;
-        $this->mappingFactory = $mappingFactory;
-        $this->imageCrop = $imageCrop;
     }
 
-    /**
-     * This action show the button crop.
-     */
-    public function buttonCrop(Request $request, $id, $fqcn): Response
+    public function buttonCrop(Request $request, $id, string $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
 
@@ -50,7 +47,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    public function overview(Request $request, $style, $id, $fqcn): Response
+    public function overview(Request $request, string $style, $id, string $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
@@ -76,7 +73,7 @@ class DefaultController extends AbstractController
         ));
     }
 
-    public function crop(Request $request, $style, $id, $fqcn): RedirectResponse|Response
+    public function crop(Request $request, string $style, $id, string $fqcn): RedirectResponse|Response
     {
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
@@ -114,14 +111,14 @@ class DefaultController extends AbstractController
             return $this->generateFinalImage($request, $imageCrop, $formCropSetting);
         }
 
-        return $this->render('@ImageCrop/Default/crop.html.twig', array(
+        return $this->render('@ImageCrop/Default/crop.html.twig', [
             'form_style_selection' => $formStyleSelection->createView(),
             'form_crop_setting' => $formCropSetting->createView(),
             'form_scaling_setting' => $formScalingSetting->createView(),
             'imageCrop' => $imageCrop,
             'settings' => $settings,
             'url_overview' => $urlOverview,
-        ));
+        ]);
     }
 
     /**
@@ -162,12 +159,12 @@ class DefaultController extends AbstractController
 
                 $result->success = true;
 
-                return new JsonResponse($result);
+                return $this->json($result);
             }
             catch (\Exception $e) {
                 $result->message = $e->getMessage();
 
-                return new JsonResponse($result);
+                return $this->json($result);
             }
         }
 
@@ -191,51 +188,48 @@ class DefaultController extends AbstractController
 
         $imageCrop->writeCropFinalImage($imageCropX, $imageCropY, $imageCropScale);
 
-        return $this->redirectToRoute('imagecrop_overview', array(
+        return $this->redirectToRoute('imagecrop_overview', [
             'style' => $data['style'],
             'id' => $data['entity-id'],
             'fqcn' => urlencode($data['entity-fqcn'])
-        ));
+        ]);
     }
 
-    /**
-     * Usefully method to get forms
-     */
-    private function getForms(ImageCrop $imageCrop, ClassUtil $classUtil, $style, $styles, $urlAction): array
+    private function getForms(ImageCrop $imageCrop, ClassUtil $classUtil, string $style, array $styles, string $urlAction): array
     {
-        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
+        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, [], [
             'defaultStyle' => $style,
             'styles' => $styles,
             'imageCropUrl' => $urlAction,
             'action' => 'crop',
-        ));
+        ]);
 
-        $formCropSetting = $this->get('form.factory')->create(CropSettingFormType::class, array(), array(
+        $formCropSetting = $this->get('form.factory')->create(CropSettingFormType::class, [], [
             'action' => str_replace('style_name', $style, $urlAction),
             'imageCrop' => $imageCrop,
-        ));
+        ]);
 
-        $formScalingSetting = $this->get('form.factory')->create(ScalingSettingFormType::class, array(), array(
+        $formScalingSetting = $this->get('form.factory')->create(ScalingSettingFormType::class, [], [
             'scaling' => $classUtil->getScaling($imageCrop->getOriginalImageWidth(), $imageCrop->getOriginalImageHeight(), $imageCrop->getWidth(), $imageCrop->getHeight()),
-        ));
+        ]);
 
-        return array($formStyleSelection, $formCropSetting, $formScalingSetting);
+        return [$formStyleSelection, $formCropSetting, $formScalingSetting];
     }
 
-    private function getUrls($styleName, $id, $fqcn): array
+    private function getUrls(string $styleName, $id, string $fqcn): array
     {
-        $urlCropAction = $this->generateUrl('imagecrop_crop', array(
+        $urlCropAction = $this->generateUrl('imagecrop_crop', [
             'style' => $styleName,
             'id' => $id,
             'fqcn' => $fqcn
-        ), UrlGeneratorInterface::ABSOLUTE_URL);
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $urlOverviewAction = $this->generateUrl('imagecrop_overview', array(
+        $urlOverviewAction = $this->generateUrl('imagecrop_overview', [
             'style' => $styleName,
             'id' => $id,
             'fqcn' => $fqcn
-        ), UrlGeneratorInterface::ABSOLUTE_URL);
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return array($urlCropAction, $urlOverviewAction);
+        return [$urlCropAction, $urlOverviewAction];
     }
 }

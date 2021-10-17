@@ -3,7 +3,7 @@ ImageCropBundle Documentation
 
   * [Installation](installation.md)
   * [Usage](usage.md)
-  * [Removing orphaned crops](orphans.md)
+  * [Removing orphaned crops](orphaned.md)
   * [FAQs](faqs.md)
 
 ----
