@@ -41,3 +41,4 @@ composer.lock
 
 # IDE
 .idea
+.DS_Store

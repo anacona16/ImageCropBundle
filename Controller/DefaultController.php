@@ -14,18 +14,25 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
 
 class DefaultController extends AbstractController
 {
+    public function __construct(ClassUtil $classUtil, PropertyMappingFactory $mappingFactory, ImageCrop $imageCrop)
+    {
+        $this->classUtil = $classUtil;
+        $this->mappingFactory = $mappingFactory;
+        $this->imageCrop = $imageCrop;
+    }
+
     /**
      * This action show the button crop.
      */
     public function buttonCrop(Request $request, $id, $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
-        
-        $classUtil = $this->get('anacona16_image_crop.util.class_util');
-        $styles = $classUtil->getStyles($entityFQCN);
+
+        $styles = $this->classUtil->getStyles($entityFQCN);
 
         $imageCropConfig = $this->getParameter('image_crop');
 
@@ -33,7 +40,7 @@ class DefaultController extends AbstractController
         $imageCropWindowWidth = $imageCropConfig['window_width'];
         $imageCropWindowHeight = $imageCropConfig['window_height'];
 
-        return $this->render('ImageCropBundle:Default:button.html.twig', [
+        return $this->render('@ImageCrop/Default/button.html.twig', [
             'image_crop_window' => $imageCropWindow,
             'image_crop_window_width' => $imageCropWindowWidth,
             'image_crop_window_height' => $imageCropWindowHeight,
@@ -48,11 +55,8 @@ class DefaultController extends AbstractController
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
 
-        $mappingFactory = $this->get('vich_uploader.property_mapping_factory');
-        $mapping = $mappingFactory->fromObject($object, $entityFQCN);
-
-        $classUtil = $this->get('anacona16_image_crop.util.class_util');
-        $styles = $classUtil->getStyles($entityFQCN);
+        $mapping = $this->mappingFactory->fromObject($object, $entityFQCN);
+        $styles = $this->classUtil->getStyles($entityFQCN);
 
         list($urlCrop, $urlAction) = $this->getUrls($style, $id, $fqcn);
 
@@ -63,7 +67,7 @@ class DefaultController extends AbstractController
             'action' => 'overview',
         ));
 
-        return $this->render('ImageCropBundle:Default:overview.html.twig', array(
+        return $this->render('@ImageCrop/Default/overview.html.twig', array(
             'form_style_selection' => $formStyleSelection->createView(),
             'object' => $object,
             'file_property_name' => $mapping[0]->getFilePropertyName(),
@@ -77,13 +81,11 @@ class DefaultController extends AbstractController
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
 
-        $mappingFactory = $this->get('vich_uploader.property_mapping_factory');
-        $mapping = $mappingFactory->fromObject($object, $entityFQCN);
+        $mapping = $this->mappingFactory->fromObject($object, $entityFQCN);
 
-        $classUtil = $this->get('anacona16_image_crop.util.class_util');
-        $styles = $classUtil->getStyles($entityFQCN);
+        $styles = $this->classUtil->getStyles($entityFQCN);
 
-        $imageCrop = $this->get('anacona16_image_crop.util.imagecrop');
+        $imageCrop = $this->imageCrop;
 
         $imageCrop->setEntity($object);
 
@@ -104,7 +106,7 @@ class DefaultController extends AbstractController
         );
 
         list($urlAction, $urlOverview) = $this->getUrls($style, $id, $fqcn);
-        list($formStyleSelection, $formCropSetting, $formScalingSetting) = $this->getForms($imageCrop, $classUtil, $style, $styles, $urlAction);
+        list($formStyleSelection, $formCropSetting, $formScalingSetting) = $this->getForms($imageCrop, $this->classUtil, $style, $styles, $urlAction);
 
         $formCropSetting->handleRequest($request);
 
@@ -112,7 +114,7 @@ class DefaultController extends AbstractController
             return $this->generateFinalImage($request, $imageCrop, $formCropSetting);
         }
 
-        return $this->render('ImageCropBundle:Default:crop.html.twig', array(
+        return $this->render('@ImageCrop/Default/crop.html.twig', array(
             'form_style_selection' => $formStyleSelection->createView(),
             'form_crop_setting' => $formCropSetting->createView(),
             'form_scaling_setting' => $formScalingSetting->createView(),
@@ -145,10 +147,9 @@ class DefaultController extends AbstractController
 
                 $object = $this->getDoctrine()->getManager()->find($entityFQCN, $entityID);
 
-                $mappingFactory = $this->get('vich_uploader.property_mapping_factory');
-                $mapping = $mappingFactory->fromObject($object, $entityFQCN);
+                $mapping = $this->mappingFactory->fromObject($object, $entityFQCN);
 
-                $imageCrop = $this->get('anacona16_image_crop.util.imagecrop');
+                $imageCrop = $this->imageCrop;
 
                 $imageCrop->setEntity($object);
 

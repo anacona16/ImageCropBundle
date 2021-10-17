@@ -3,10 +3,12 @@
 namespace Anacona16\Bundle\ImageCropBundle\Tests\App;
 
 use Anacona16\Bundle\ImageCropBundle\ImageCropBundle;
+use Liip\ImagineBundle\LiipImagineBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
+use Vich\UploaderBundle\VichUploaderBundle;
 
 class TestKernel extends Kernel
 {
@@ -14,6 +16,8 @@ class TestKernel extends Kernel
     {
         return array(
             new FrameworkBundle(),
+            new LiipImagineBundle(),
+            new VichUploaderBundle(),
             new ImageCropBundle(),
         );
     }

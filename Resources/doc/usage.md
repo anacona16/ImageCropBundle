@@ -15,7 +15,7 @@ image_crop:
     mappings:
         App\Entity\Post:
             filters:
-                - imagine_filter_name
+                - post_image
 ```
 
 This bundle requires that you have a liip imagine filter, this filter must have
@@ -32,6 +32,7 @@ liip_imagine:
 ```
 
 This configuration is necessary for set the min/max crop size.
+See [Filters at LiipImagineBundle](https://symfony.com/bundles/LiipImagineBundle/current/filters/sizing.html#cropping-images)
 
 **Please be sure that exists a filter called *_imagecrop_temp: ~* this is mandatory**
 
@@ -41,7 +42,7 @@ After this, you must add this lines to your `config/packages/twig.yml`
 # packages/twig.yml
 twig:
     form_themes:
-        - "ImageCropBundle:Form:fields.html.twig"
+        - '@ImageCrop/Form/fields.html.twig'
 ```
 
 ### Using VichUploaderBundle
@@ -49,9 +50,9 @@ twig:
 ```php
 $builder
     ->add('title')
-    ->add('imageFile', 'Vich\UploaderBundle\Form\Type\VichImageType', array(
+    ->add('imageFile', 'Vich\UploaderBundle\Form\Type\VichImageType', [
         'crop' => true,
-    ))
+    ])
 ;
 ```
 

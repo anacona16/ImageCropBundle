@@ -1,7 +1,7 @@
 ImageCrop
 =========
 
-<img src="https://raw.githubusercontent.com/anacona16/ImageCropBundle/2.0/Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" />
+<img src="Resources/doc/images/image_crop.png" width="50%" alt="ImageCrop" title="ImageCrop" />
 
 ImageCrop lets you crop images in Symfony applications, this bundle add a new
 form file field extension.

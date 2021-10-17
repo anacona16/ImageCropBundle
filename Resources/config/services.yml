@@ -23,7 +23,13 @@ services:
         #class: Anacona16\Bundle\ImageCropBundle\Controller\DefaultController
         public: true
         autowire: true
-        tags: [container.service_subscriber]
+        arguments:
+            - "@anacona16_image_crop.util.class_util"
+            #- 'Vich\UploaderBundle\Mapping\PropertyMappingFactory'
+            - '@vich_uploader.property_mapping_factory'
+            - '@anacona16_image_crop.util.imagecrop'
+        tags: [container.service_subscriber, service_arguments]
+
 
     Anacona16\Bundle\ImageCropBundle\Command\ClearOrphansCommand:
         arguments:

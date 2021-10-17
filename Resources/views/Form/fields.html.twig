@@ -1,18 +1,12 @@
 {% block file_widget %}
-    {% spaceless %}
+   {{ block('form_widget') }}
 
-        {{ block('form_widget') }}
-
-        {% if entity_id is defined and entity_id is not null %}
-            {{ render(controller('ImageCropBundle:Default:buttonCrop', {fqcn: entity_fqcn, id: entity_id})) }}
-        {% endif %}
-
-    {% endspaceless %}
+   {% if entity_id is defined and entity_id is not null %}
+      {{ render(controller('Anacona16\\Bundle\\ImageCropBundle\\Controller\\DefaultController::buttonCrop', {fqcn: entity_fqcn, id: entity_id})) }}
+   {% endif %}
 {% endblock %}
 
 {% block vich_image_widget %}
-    {% spaceless %}
-
 		<div class="vich-image">
 	        {{ form_row(form.file) }}
 	        
@@ -30,8 +24,6 @@
 	    </div>
 
         {% if entity_id is defined and entity_id is not null %}
-            {{ render(controller('ImageCropBundle:Default:buttonCrop', {fqcn: entity_fqcn, id: entity_id})) }}
+            {{ render(controller('Anacona16\\Bundle\\ImageCropBundle\\Controller\\DefaultController::buttonCrop', {fqcn: entity_fqcn, id: entity_id})) }}
         {% endif %}
-
-    {% endspaceless %}
 {% endblock %}
