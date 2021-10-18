@@ -27,7 +27,7 @@ class StyleSelectionFormType extends AbstractType
     {
         $builder
             ->add('styles', ChoiceType::class, [
-                'label' => 'crop' === $options['action'] ? 'form.label.style_crop_form' : 'form.label.style_overview_form',
+                'label' => ('crop' === $options['action']) ? 'form.label.style_crop_form' : 'form.label.style_overview_form',
                 'choices' => $options['styles'],
                 'data' => $options['defaultStyle'],
                 'translation_domain' => 'ImageCropBundle',

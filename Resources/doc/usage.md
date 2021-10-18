@@ -18,7 +18,7 @@ image_crop:
                 - post_image
 ```
 
-This bundle requires that you have a liip imagine filter, this filter must have
+This bundle requires that you have a **liip imagine filter**, this filter must have
 a thumbnail filter with width and height attributes:
 
 ```yaml

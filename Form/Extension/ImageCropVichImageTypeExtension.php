@@ -23,9 +23,12 @@ class ImageCropVichImageTypeExtension extends AbstractTypeExtension
         if (array_key_exists('crop', $options) && true === $options['crop']) {
             $parentData = $form->getParent()->getData();
 
-            $entity = get_class($parentData);
-
+            $entity = $parentData::class;
+            #$meta = $em->getClassMetadata($entity);
+            #$identifier = $meta->getSingleIdentifierFieldName();
+            #$em->getFieldValue($entity, $field)
             $view->vars['entity_fqcn'] = urlencode($entity);
+            # TODO UUID
             $view->vars['entity_id'] = $parentData->getId();
         }
     }

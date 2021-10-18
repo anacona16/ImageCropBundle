@@ -19,12 +19,10 @@ class ScalingSettingFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $optionsScaling = $options['scaling'];
-
         $builder
             ->add('scaling', ChoiceType::class, [
                 'label' => 'form.label.scaling',
-                'choices' => $optionsScaling,
+                'choices' => $options['scaling'],
                 'translation_domain' => 'ImageCropBundle',
             ])
         ;

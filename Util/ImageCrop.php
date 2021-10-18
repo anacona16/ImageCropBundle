@@ -6,6 +6,7 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Data\DataManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
 use Liip\ImagineBundle\Imagine\Filter\FilterManager;
+use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Storage\StorageInterface;
 
 class ImageCrop
@@ -15,10 +16,10 @@ class ImageCrop
     private bool $skipPreview = true;
     private bool $extraControls = false;
 
-    private $file;
-    private $imageStyle;
+    private \stdClass|File $file;
+    private array $imageStyle;
     private string $propertyName = 'none';
-    private $styleDestination;
+    private string $styleDestination;
     private int $imageWidth;
     private int $imageHeight;
     private int $originalImageWidth;
@@ -36,11 +37,7 @@ class ImageCrop
     private string $scale = 'original';
     private bool $disableIfNoData = false;
     private bool $hasSettings = false;
-
-    /**
-     * @var object
-     */
-    private $entity;
+    private object $entity;
 
     public function __construct(
         private array $imageCropSettings,
@@ -58,7 +55,7 @@ class ImageCrop
      *
      * @throws \Exception
      */
-    public function loadFile($object, string $propertyName)
+    public function loadFile(object $object, string $propertyName)
     {
         $filePath = $this->storage->resolvePath($object, $propertyName);
         $fileUri = $this->storage->resolveUri($object, $propertyName);
@@ -79,12 +76,12 @@ class ImageCrop
         }
     }
 
-    public function getFile()
+    public function getFile(): File|\stdClass
     {
         return $this->file;
     }
 
-    public function setFile($file)
+    public function setFile(File|\stdClass $file)
     {
         $this->file = $file;
     }
@@ -232,7 +229,7 @@ class ImageCrop
         }
     }
 
-    public function getImageStyle()
+    public function getImageStyle(): array
     {
         return $this->imageStyle;
     }
@@ -249,7 +246,7 @@ class ImageCrop
     /**
      * Get the destination from the image for current style.
      */
-    public function getStyleDestination()
+    public function getStyleDestination(): string
     {
         return $this->styleDestination;
     }
@@ -366,7 +363,7 @@ class ImageCrop
     /**
      * Write the file to crop, and apply all effects, until the imagecrop effects cropping can be done.
      */
-    public function writeCropFinalImage(int $imageCropX, int $imageCropY, $imageCropScale)
+    public function writeCropFinalImage(int $imageCropX, int $imageCropY, string|float|int $imageCropScale)
     {
         $style = $this->imageStyle;
 
@@ -397,14 +394,12 @@ class ImageCrop
         $settings = [];
 
         // Add crop ui if in cropping mode.
-        if ($inCroppingMode) {
-            if ($this->isResizable) {
+        if ($inCroppingMode && $this->isResizable) {
                 $settings['resizeAspectRatio'] = $this->resizeAspectRatio;
                 $settings['minWidth'] = ($this->downscalingAllowed ? 0 : $this->startWidth);
                 $settings['minHeight'] = ($this->downscalingAllowed ? 0 : $this->startHeight);
                 $settings['startHeight'] = $this->startHeight;
                 $settings['startWidth'] = $this->startWidth;
-            }
         }
 
         return $settings;

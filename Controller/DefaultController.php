@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Uid\Uuid;
 use Vich\UploaderBundle\Mapping\PropertyMappingFactory;
 
 class DefaultController extends AbstractController
@@ -25,7 +26,7 @@ class DefaultController extends AbstractController
     {
     }
 
-    public function buttonCrop(Request $request, $id, string $fqcn): Response
+    public function buttonCrop(Request $request, string|int|Uuid $id, string $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
 
@@ -47,7 +48,7 @@ class DefaultController extends AbstractController
         ]);
     }
 
-    public function overview(Request $request, string $style, $id, string $fqcn): Response
+    public function overview(Request $request, string $style, string|int|Uuid $id, string $fqcn): Response
     {
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
@@ -57,23 +58,23 @@ class DefaultController extends AbstractController
 
         list($urlCrop, $urlAction) = $this->getUrls($style, $id, $fqcn);
 
-        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, array(), array(
+        $formStyleSelection = $this->get('form.factory')->create(StyleSelectionFormType::class, [], [
             'defaultStyle' => $style,
             'styles' => $styles,
             'imageCropUrl' => $urlAction,
             'action' => 'overview',
-        ));
+        ]);
 
-        return $this->render('@ImageCrop/Default/overview.html.twig', array(
+        return $this->render('@ImageCrop/Default/overview.html.twig', [
             'form_style_selection' => $formStyleSelection->createView(),
             'object' => $object,
             'file_property_name' => $mapping[0]->getFilePropertyName(),
             'style_name' => $style,
             'url_crop' => $urlCrop,
-        ));
+        ]);
     }
 
-    public function crop(Request $request, string $style, $id, string $fqcn): RedirectResponse|Response
+    public function crop(Request $request, string $style, string|int|Uuid $id, string $fqcn): RedirectResponse|Response
     {
         $entityFQCN = urldecode($fqcn);
         $object = $this->getDoctrine()->getManager()->find($entityFQCN, $id);
@@ -96,11 +97,11 @@ class DefaultController extends AbstractController
         $imageCrop->writeCropreadyImage();
         $settings = $imageCrop->addImagecropUi(true);
 
-        $settings += array(
+        $settings += [
             'manipulationUrl' => $this->get('router')->generate('imagecrop_generate_image'),
             'cropped' => $request->get('cropping', false),
             'resizable' => $imageCrop->isResizable(),
-        );
+        ];
 
         list($urlAction, $urlOverview) = $this->getUrls($style, $id, $fqcn);
         list($formStyleSelection, $formCropSetting, $formScalingSetting) = $this->getForms($imageCrop, $this->classUtil, $style, $styles, $urlAction);
@@ -132,7 +133,8 @@ class DefaultController extends AbstractController
             $result = new \stdClass();
             $result->success = false;
 
-            $entityID = $request->request->getInt('entityID');
+            #$entityID = $request->request->getInt('entityID');
+            $entityID = $request->request->get('entityID');
             $entityFQCN = $request->request->get('entityFQCN', false);
             $styleName = $request->request->get('style', false);
             $scale = $request->request->get('scale', false);
@@ -216,7 +218,7 @@ class DefaultController extends AbstractController
         return [$formStyleSelection, $formCropSetting, $formScalingSetting];
     }
 
-    private function getUrls(string $styleName, $id, string $fqcn): array
+    private function getUrls(string $styleName, string|int|Uuid $id, string $fqcn): array
     {
         $urlCropAction = $this->generateUrl('imagecrop_crop', [
             'style' => $styleName,

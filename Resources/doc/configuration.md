@@ -31,7 +31,7 @@ Autoscale the initial crop to fit the popup, default: false. *Not implemented ye
 
 The list mapping, this is an important configuration.
 
-Set the FQCN for each entity where you want to use the ImageCropBundle
+Set the FQCN (fully qualified class name) for each entity where you want to use the ImageCropBundle
    
 **filters**
 
