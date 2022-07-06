@@ -1,3 +1,8 @@
+⚠️⚠️⚠️ (Warning) Not maintained
+==============
+
+This project is not maintained any more, please use this solution instead https://ux.symfony.com/cropperjs
+
 ImageCrop
 =========
 
