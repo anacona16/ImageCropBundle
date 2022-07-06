@@ -1,0 +1,13 @@
+image_crop: Bildausschnitt auswählen
+message_crop: Bildgröße verändern, falls notwendig. Danach Bildausschnitt wählen. 'Auswahl speichern' zum bestätigen anklicken.
+message_overview: Dies ist eine Vorschau für die zuschneiden-Option im aktuellen Style. Zum ändern 'Style bearbeiten' anklicken.
+
+label.edit_this_style: Style bearbeiten
+label.cancel_crop: Zuschneiden abbrechen
+
+form.label.style_overview_form: Style für Vorschau auswählen
+form.label.style_crop_form: Anderen Style wählen um Bildauschnitt zu ändern
+form.label.scaling: Bild skalieren
+form.label.mapping: Zuschneiden
+form.label.submit_mapping: Bildauschnitt verwenden
+form.label.save: Auswahl speichern

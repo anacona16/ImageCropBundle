@@ -12,35 +12,29 @@ class StyleSelectionFormType extends AbstractType
 {
     /**
      * Add the image_path option
-     *
-     * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined(array(
+        $resolver->setDefined([
             'defaultStyle',
             'styles',
             'imageCropUrl',
             'action'
-        ));
+        ]);
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('styles', ChoiceType::class, array(
-                'label' => 'crop' === $options['action'] ? 'form.label.style_crop_form' : 'form.label.style_overview_form',
+            ->add('styles', ChoiceType::class, [
+                'label' => ('crop' === $options['action']) ? 'form.label.style_crop_form' : 'form.label.style_overview_form',
                 'choices' => $options['styles'],
                 'data' => $options['defaultStyle'],
                 'translation_domain' => 'ImageCropBundle',
-            ))
-            ->add('imageCropUrl', HiddenType::class, array(
+            ])
+            ->add('imageCropUrl', HiddenType::class, [
                 'data' => $options['imageCropUrl'],
-            ))
+            ])
         ;
     }
 }

@@ -14,14 +14,14 @@ Why use this bundle and not other like JbFileUploaderBundle?
 
 There are a few reasons:
 
-  * This bundle allow to crop already uploaded images.
-  * This bundle allow to scale the original image
-  * This bundle allow to delete orphaned files.
+  * This bundle allows to crop already uploaded images.
+  * This bundle allows to scale the original image
+  * This bundle allows to delete orphaned files.
 
 Why this bundle use VichUploaderBundle?
 ---------------------------------------
 
-ImageCropBundle use VichUploaderBundle to get informaiton about upoloaded files on entity.
+ImageCropBundle use VichUploaderBundle to get information about uploaded files on entity.
 
 If you want to use this bundle without VichUploaderBundle use the first version of the ImageCropBundle, it does not 
 require VichUploaderBundle

@@ -18,3 +18,20 @@ services:
         class: Anacona16\Bundle\ImageCropBundle\Util\ClassUtil
         arguments:
             - "%image_crop%"
+
+    Anacona16\Bundle\ImageCropBundle\Controller\DefaultController:
+        #class: Anacona16\Bundle\ImageCropBundle\Controller\DefaultController
+        public: true
+        autowire: true
+        arguments:
+            - "@anacona16_image_crop.util.class_util"
+            #- 'Vich\UploaderBundle\Mapping\PropertyMappingFactory'
+            - '@vich_uploader.property_mapping_factory'
+            - '@anacona16_image_crop.util.imagecrop'
+        tags: [container.service_subscriber, service_arguments]
+
+
+    Anacona16\Bundle\ImageCropBundle\Command\ClearOrphansCommand:
+        arguments:
+            - "@parameter_bag"
+        tags: [ console.command ]

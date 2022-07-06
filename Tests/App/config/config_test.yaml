@@ -1,0 +1,23 @@
+#parameters:
+    #database_path: "%kernel.project_dir%/build/test.db"
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+framework:
+    translator:      ~
+    secret:          secret
+    test:            true
+    router:          { resource: "%kernel.project_dir%/Tests/App/config/routing.yaml" }
+    session:
+        storage_factory_id: session.storage.factory.mock_file
+    profiler:
+        enabled: false
+        collect: false
+
+# bundle-settings
+image_crop:
+    orphan_maxage: 300

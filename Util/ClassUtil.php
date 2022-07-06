@@ -4,30 +4,16 @@ namespace Anacona16\Bundle\ImageCropBundle\Util;
 
 class ClassUtil
 {
-    /**
-     * @var array
-     */
-    private $imageCropSettings;
-
-    /**
-     * ClassUtil constructor.
-     * @param array $imageCropSettings
-     */
-    public function __construct(array $imageCropSettings)
+    public function __construct(private array $imageCropSettings)
     {
-        $this->imageCropSettings = $imageCropSettings;
     }
 
     /**
      * Return list of styles for use on form.
-     *
-     * @param $entity
-     *
-     * @return array
      */
-    public function getStyles($entity)
+    public function getStyles(string $entity): array
     {
-        $styles = array();
+        $styles = [];
 
         foreach ($this->imageCropSettings['mappings'][$entity]['filters'] as $key => $filter) {
             $styles[$filter] = $filter;
@@ -38,15 +24,8 @@ class ClassUtil
 
     /**
      * Return the scale options.
-     *
-     * @param $originalImageWidth
-     * @param $originalImageHeight
-     * @param $cropWidth
-     * @param $cropHeight
-     *
-     * @return array
      */
-    public function getScaling($originalImageWidth, $originalImageHeight, $cropWidth, $cropHeight)
+    public function getScaling(int $originalImageWidth, int $originalImageHeight, int $cropWidth, int $cropHeight): array
     {
         $step = $this->imageCropSettings['scale_step'];
         $image_width = $scale_width = $originalImageWidth;
@@ -55,7 +34,7 @@ class ClassUtil
         $crop_width = $cropWidth;
         $crop_height = $cropHeight;
 
-        $options = array();
+        $options = [];
         if ($step > 0) {
             $options[$image_width . 'x' . $image_height] = $image_width . ' x ' . $image_height . 'px (Original)';
             $scale_width -= $step;
